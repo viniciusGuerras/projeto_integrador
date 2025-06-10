@@ -1,21 +1,18 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 
-export default function AllocationOverlay({ open, onClose, onSubmit }) {
-    const [selectedIdentifier, setSelectedIdentifier] = useState("");
+export default function AllocationEditOverlay({open, tab, initialData, onClose, onSubmit }) {
     const [selectedDay, setSelectedDay] = useState("");
 
     const handleSubmit = () => {
-        if (!selectedIdentifier || !selectedDay){
+        if (!selectedDay){
             return; 
         }
 
         onSubmit({
-            identifier: selectedIdentifier,
             day: selectedDay
         });
 
-        setSelectedIdentifier("");
         setSelectedDay("");
     };
 
@@ -29,19 +26,11 @@ export default function AllocationOverlay({ open, onClose, onSubmit }) {
             className="flex flex-col gap-3 bg-slate-50 rounded-lg p-6 w-80"
             onClick={(e) => e.stopPropagation()}
         >
-            <h2 className="text-xl font-semibold mb-2">Nova Reserva</h2>
+            <h2 className="text-xl font-semibold mb-2">{tab}</h2>
 
             <label className="block mb-2 text-sm font-medium">
-            Selecione a sala
+            modificar data da reserva
             </label>
-            <select
-            className="block w-full mb-4 px-3 py-2 bg-slate-100 border rounded focus:outline-none"
-            value={selectedIdentifier}
-            onChange={(e) => setSelectedIdentifier(e.target.value)}
-            >
-            <option value="">--ESCOLHA--</option>
-            <option value="sala">sala</option>
-            </select>
 
             <input type="date" className="w-full bg-slate-200 mb-2"
             onChange={(e) => setSelectedDay(e.target.value)}
@@ -57,7 +46,7 @@ export default function AllocationOverlay({ open, onClose, onSubmit }) {
                 onClick={handleSubmit}
                 disabled={!selectedIdentifier || !selectedDay}
             >
-                Reservar
+                Modificar
             </Button>
             </div>
         </div>

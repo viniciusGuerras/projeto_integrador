@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 
-export default function AllocationOverlay({ open, onClose, onSubmit }) {
+export default function AllocationOverlay({open, tab, options, onClose, onSubmit }) {
     const [selectedIdentifier, setSelectedIdentifier] = useState("");
     const [selectedDay, setSelectedDay] = useState("");
 
@@ -29,10 +29,10 @@ export default function AllocationOverlay({ open, onClose, onSubmit }) {
             className="flex flex-col gap-3 bg-slate-50 rounded-lg p-6 w-80"
             onClick={(e) => e.stopPropagation()}
         >
-            <h2 className="text-xl font-semibold mb-2">Nova Reserva</h2>
+            <h2 className="text-xl font-semibold mb-2">{tab}</h2>
 
             <label className="block mb-2 text-sm font-medium">
-            Selecione o material
+            Fazer reserva
             </label>
             <select
             className="block w-full mb-4 px-3 py-2 bg-slate-100 border rounded focus:outline-none"
@@ -40,7 +40,11 @@ export default function AllocationOverlay({ open, onClose, onSubmit }) {
             onChange={(e) => setSelectedIdentifier(e.target.value)}
             >
             <option value="">--ESCOLHA--</option>
-            <option value="material">material</option>
+            {options.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                </option>
+            ))}
             </select>
 
             <input type="date" className="w-full bg-slate-200 mb-2"

@@ -1,56 +1,51 @@
 import AllocationCard from "./AllocationCard.jsx"; 
-import MaterialAllocationOverlay from "./MaterialAllocationOverlay.jsx"
 import Button from "../ui/Button";
-import { useState } from "react";
-import ClassroomAllocationOverlay from "./ClassroomAllocationOverlay.jsx";
+import { useRef, useState } from "react";
+import AllocationOverlay from "./AllocationOverlay.jsx";
 
 export default function AllocationPanel(){
-    const [activeTab, setActiveState] = useState("salas");
+    const idCounter = useRef(1);
+
+    const [activeTab, setActiveState] = useState("classrooms");
     const [overlayOpen, toggleOverlay] = useState(false);
-    const [classroomAllocations, setClassroomItems] = useState([])
-    const [materialsAllocations, setMaterialsItems] = useState([])
+
+    const classroomOptions = [{label:"sala", value:"sala"}];
+    const materialOptions = [{label:"material",value:"material"}];
+
+    const [allocations, setAllocations] = useState({
+        classrooms:[],
+        materials:[],
+    });
 
     const handleEdit = () => {
-        return
+        return;
 
     };
 
-    const handleRemove = () => {
-        return
+    const handleRemove = id => {
+        setAllocations(prev => (
+            {...prev, 
+            [activeTab]: [...prev[activeTab].filter(i => i.key != id)]
+            }
+        ))
 
     };
 
-    const handleClassroomAllocation = (reservationData) => {
+    const handleAllocations = (reservationData) => {
         const newAllocation = {
+            key: idCounter.current++,
             identifier: reservationData.identifier,
             day: reservationData.day,
         }; 
 
-        setClassroomItems(prevAllocations => [...prevAllocations, newAllocation])
+        setAllocations(prev => ({
+            ...prev,
+            [activeTab]: [...prev[activeTab], newAllocation],
+        }));
         toggleOverlay(false)
     };
 
-    const handleMaterialsAllocation = (reservationData) => {
-        const newAllocation = {
-            identifier: reservationData.identifier,
-            day: reservationData.day,
-        }; 
-
-        setMaterialsItems(prevAllocations => [...prevAllocations, newAllocation])
-        toggleOverlay(false)
-    };
-
-    const onSubmit = activeTab === "salas" 
-        ? handleClassroomAllocation 
-        : handleMaterialsAllocation;
-
-    const Overlay = activeTab === "salas"  ?
-            ClassroomAllocationOverlay:    
-            MaterialAllocationOverlay;
-
-    const list = activeTab === "salas"
-        ? classroomAllocations 
-        : materialsAllocations;
+    const list = allocations[activeTab];
 
     return (
         <div className="w-4/6 h-full rounded-xl p-3  flex flex-col gap-3 items-end bg-slate-100">
@@ -58,17 +53,17 @@ export default function AllocationPanel(){
 
                 <li
                 className={`cursor-pointer px-3 py-1 rounded ${
-                activeTab === "salas" ? "outline outline-solid outline-slate-300 font-semibold" : ""
+                activeTab === "classrooms" ? "outline outline-solid outline-slate-300 font-semibold" : ""
                 }`}
-                onClick={() => setActiveState("salas")}
+                onClick={() => setActiveState("classrooms")}
                 >salas
                 </li>
 
                 <li
                 className={`cursor-pointer px-3 py-1 rounded ${
-                activeTab === "materiais" ? "outline outline-solid outline-slate-300 font-semibold" : ""
+                activeTab === "materials" ? "outline outline-solid outline-slate-300 font-semibold" : ""
                 }`}
-                onClick={() => setActiveState("materiais")}
+                onClick={() => setActiveState("materials")}
                 >materiais
                 </li>
 
@@ -76,10 +71,12 @@ export default function AllocationPanel(){
 
                 <Button variant="terciary" size="md" onClick={() => toggleOverlay(true)}>Nova Reserva</Button>
 
-                <Overlay 
+                <AllocationOverlay 
+                    tab= {activeTab === "classrooms" ? "salas" : "materiais"}
+                    options = {activeTab === "classrooms" ? classroomOptions : materialOptions}
                     open={overlayOpen}
                     onClose={() => toggleOverlay(false)}
-                    onSubmit={onSubmit}
+                    onSubmit={handleAllocations}
                 />
 
             </ul>
@@ -88,11 +85,10 @@ export default function AllocationPanel(){
                 {list.map(
                     item => (
                         <AllocationCard 
-                            key={item.identifier}
                             identifier={item.identifier}
                             day={item.day}
-                            onEdit={handleEdit(item.identifier)}
-                            onRemove={handleRemove(item.identifier)}
+                            onEdit={() => handleEdit(item.identifier)}
+                            onRemove={() => handleRemove(item.key)}
                         />
                 ))}
             </div>
