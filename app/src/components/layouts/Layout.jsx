@@ -4,16 +4,17 @@ import Menu from "../Menu";
 
 export default function Layout() {
   return (
+    <>
     <div className="min-w-full min-h-screen flex flex-col">
-      <div className="flex flex-row flex-grow">
         <Menu />
-        
+      <div className="flex flex-row flex-grow">
         <main className="flex-grow bg-slate-300 p-4">
           <Outlet />
         </main>
       </div>
 
-      <Footer />
     </div>
+    <Footer />
+    </>
   );
 }
