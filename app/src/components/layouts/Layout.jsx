@@ -7,7 +7,8 @@ export default function Layout() {
     <div className="min-w-full min-h-screen flex flex-col">
       <div className="flex flex-row flex-grow">
         <Menu />
-        <main className="flex-grow bg-slate-400 p-4">
+        
+        <main className="flex-grow bg-slate-300 p-4">
           <Outlet />
         </main>
       </div>
