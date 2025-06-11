@@ -14,21 +14,16 @@ function App() {
     <Router>
       <Routes>
         
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+        <Route element={<Layout />}>
+          <Route path="/home" element={<Home />} />
           <Route path="/rent" element={<Allocate />} />
           <Route path="/devolute" element={<Devolve />}/>
           <Route path="/report" element={<Report />}/>
         </Route>
 
-        <Route path="/login" element={<AuthLayout />}>
+        <Route path="/" element={<AuthLayout />}>
           <Route index element={<Login />} />
         </Route>
-
-        <Route path="/landing" element={<Landing />}>
-        </Route>
-
-
       </Routes>
     </Router>
   );
