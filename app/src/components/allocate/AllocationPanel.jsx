@@ -48,7 +48,7 @@ export default function AllocationPanel(){
     const list = allocations[activeTab];
 
     return (
-        <div className="w-4/6 h-full rounded-xl p-3  flex flex-col gap-3 items-end bg-slate-100">
+        <div className="w-4/6 h-full rounded-md p-3  flex flex-col gap-3 items-end bg-slate-200">
             <ul className="w-full h-auto gap-3 flex text-slate-800 items-center justify-start">
 
                 <li
