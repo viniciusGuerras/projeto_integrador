@@ -1,3 +1,4 @@
+import loginCard from '../assets/loginCard.jpg';
 export default function LoginBox() {
   return (
     <div className="w-1/2 h-[60vh] mx-auto mt-12 bg-white rounded-2xl shadow-lg flex p-2">
@@ -47,7 +48,8 @@ export default function LoginBox() {
         </form>
       </div>
 
-      <div className="w-1/2 h-auto bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center text-white">
+      <div className="w-1/2 h-auto rounded-lg flex items-center justify-center text-white">
+        <img className="h-full w-full rounded-lg object-cover" src={loginCard} alt="Login"/>
       </div>
     </div>
   );
