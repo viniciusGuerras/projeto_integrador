@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Allocate from "./pages/Allocate.jsx";
 import Login from "./pages/Login.jsx"
 import Report from "./pages/Report.jsx";
+import Profile from "./pages/Profile.jsx";
 
 
 function App() {
@@ -15,8 +16,9 @@ function App() {
         
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/rent" element={<Allocate />} />
+          <Route path="/allocate" element={<Allocate />} />
           <Route path="/report" element={<Report />}/>
+          <Route path="/profile" element={<Profile />}/>
         </Route>
 
         <Route path="/" element={<AuthLayout />}>
