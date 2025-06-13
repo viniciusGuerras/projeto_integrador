@@ -1,13 +1,17 @@
 import AllocationCard from "./AllocationCard.jsx"; 
 import Button from "../ui/Button";
-import { useRef, useState } from "react";
+import {useRef, useState } from "react";
 import AllocationOverlay from "./AllocationOverlay.jsx";
+import AllocationEditOverlay from "./AllocationEditOverlay.jsx"
 
 export default function AllocationPanel(){
     const idCounter = useRef(1);
 
     const [activeTab, setActiveState] = useState("classrooms");
     const [overlayOpen, toggleOverlay] = useState(false);
+
+    const [edittOverlayOpen, toggleEditOverlay] = useState(false);
+    const [editTarget, setEditTarget] = useState(null); 
 
     const classroomOptions = [{label:"sala", value:"sala"}];
     const materialOptions = [{label:"material",value:"material"}];
@@ -17,15 +21,25 @@ export default function AllocationPanel(){
         materials:[],
     });
 
-    const handleEdit = () => {
-        return;
-
+    const handleEdit = (key) => {
+        const toEdit = allocations[activeTab].find(i => i.key == key);
+        setEditTarget(toEdit);
+        toggleEditOverlay(true);
     };
 
-    const handleRemove = id => {
+    const handleEditSubmit = (updateData) => {
+        setAllocations(prev => ({
+            ...prev,
+            [activeTab] : prev[activeTab].map(item => item.key == editTarget.key ? {...item, ...updateData} : item)
+        }));
+        toggleEditOverlay(false);
+        setEditTarget(null);
+    }
+
+    const handleRemove = key => {
         setAllocations(prev => (
             {...prev, 
-            [activeTab]: [...prev[activeTab].filter(i => i.key != id)]
+            [activeTab]: [...prev[activeTab].filter(i => i.key != key)]
             }
         ))
 
@@ -42,6 +56,7 @@ export default function AllocationPanel(){
             ...prev,
             [activeTab]: [...prev[activeTab], newAllocation],
         }));
+
         toggleOverlay(false)
     };
 
@@ -79,15 +94,29 @@ export default function AllocationPanel(){
                     onSubmit={handleAllocations}
                 />
 
+                <AllocationEditOverlay 
+                    tab={activeTab === "classrooms" ? "salas" : "materiais"}
+                    options={activeTab === "classrooms" ? classroomOptions : materialOptions}
+                    open={edittOverlayOpen}
+                    onClose={() => {
+                        toggleEditOverlay(false);
+                        setEditTarget(null);
+                    }}
+                    onSubmit={handleEditSubmit}
+                    initialData={editTarget}
+                />
+
+
             </ul>
 
             <div className="w-full flex-1 rounded-lg"> 
                 {list.map(
                     item => (
                         <AllocationCard 
+                            key={item.key}
                             identifier={item.identifier}
                             day={item.day}
-                            onEdit={() => handleEdit(item.identifier)}
+                            onEdit={() => handleEdit(item.key)}
                             onRemove={() => handleRemove(item.key)}
                         />
                 ))}

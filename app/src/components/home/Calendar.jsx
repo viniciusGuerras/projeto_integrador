@@ -1,4 +1,3 @@
-import * as React from 'react';
 import dayjs from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -10,7 +9,7 @@ export default function Calendar() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={['DateCalendar', 'DateCalendar']}>
         <DemoItem>
-            <DateCalendar defaultValue={dayjs('2022-04-17')} readOnly />
+            <DateCalendar defaultValue={dayjs()} readOnly />
         </DemoItem>
       </DemoContainer>
     </LocalizationProvider>
