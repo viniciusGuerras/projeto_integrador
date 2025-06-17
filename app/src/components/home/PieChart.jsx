@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 
-export default function PieChart({ data, colors, width = 400, height = 400 }) {
+export default function PieChart({ data, colors, width = 300, height = 300 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {

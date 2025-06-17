@@ -7,13 +7,12 @@ export default function Layout() {
     <>
     <div className="min-w-full min-h-screen flex flex-col">
         <Menu />
-      <div className="flex flex-row flex-grow">
-        <main className="flex-grow bg-slate-300 p-4">
-          <Outlet />
-        </main>
-      </div>
-
-    </div>
+		<div className="flex flex-row flex-grow">
+			<main className="flex-grow bg-slate-200 p-4">
+				<Outlet />
+			</main>
+		</div>
+	</div>
     <Footer />
     </>
   );

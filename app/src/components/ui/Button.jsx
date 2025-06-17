@@ -1,13 +1,6 @@
 import React from 'react';
 
-const Button = ({
-  children,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
-  onClick,
-  ...rest
-}) => {
+const Button = ({children, variant = 'primary', size = 'md', disabled = false, onClick, ...rest}) => {
   const variants = {
     primary:
       'bg-blue-600 hover:bg-blue-700 text-white shadow-md focus:ring-2 focus:ring-blue-500',
@@ -37,13 +30,7 @@ const Button = ({
   ].join(' ');
 
   return (
-    <button
-      type="button"
-      className={"ml-2 mr-2" + className}
-      onClick={onClick}
-      disabled={disabled}
-      {...rest}
-    >
+    <button type="button" className={"ml-2 mr-2" + className} onClick={onClick} disabled={disabled} {...rest}>
       {children}
     </button>
   );
