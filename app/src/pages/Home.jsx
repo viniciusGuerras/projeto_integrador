@@ -39,7 +39,7 @@ export default function Home() {
     ]
 
     return (
-        <div className="w-full grid grid-cols-[.5fr_1fr_.75fr_1fr] gap-3">
+        <div className="w-full grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-[.5fr_1fr_.75fr_1fr] gap-3">
                 <MainCard 
                     title={"Notificações"} 
                     icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
