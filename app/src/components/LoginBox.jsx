@@ -1,5 +1,7 @@
+import loginCard from '../assets/loginCard.jpg';
 import Button from "./ui/Button";
 import Input from "./ui/Input";
+
 
 export default function LoginBox() {
   return (
@@ -27,7 +29,6 @@ export default function LoginBox() {
                     styleLabel={"block text-sm font-medium text-gray-500"}
                     styleInput={"w-full px-4 py-2 border bg-white border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2"} 
                 />
-
                 <button
                 type="submit"
                 className="w-full h-14 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors self-center">
