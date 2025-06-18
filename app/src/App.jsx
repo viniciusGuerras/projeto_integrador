@@ -12,12 +12,12 @@ export default function App(){
       <Router>
         <Routes>
           
-          <Route element={<Layout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/allocate" element={<Allocate />} />
-            <Route path="/report" element={<Report />}/>
-            <Route path="/profile" element={<Profile />}/>
-          </Route>
+            <Route element={<Layout />}>
+                <Route path="/home" element={<Home />} />
+                <Route path="/allocate" element={<Allocate />} />
+                <Route path="/report" element={<Report />}/>
+                <Route path="/profile" element={<Profile />}/>
+            </Route>
 
           <Route path="/" element={<AuthLayout />}>
             <Route index element={<Login />} />

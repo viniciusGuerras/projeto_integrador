@@ -1,8 +1,8 @@
 
 export default function Report(){
     return(
-        <div className="h-full w-full flex items-center justify-center">
-            <div className="w-1/2 h-1/2 bg-white text-slate-500 rounded-xl flex items-center justify-center">
+        <div className="w-full flex items-center justify-center">
+            <div className="w-1/4 h-1/2 bg-white text-slate-500 rounded-xl flex items-center justify-center">
                 <div className="flex gap-4 items-center justify-center">
                     <h1>Download</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-12">

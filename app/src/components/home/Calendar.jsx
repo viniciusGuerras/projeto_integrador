@@ -9,7 +9,7 @@ export default function Calendar() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={['DateCalendar', 'DateCalendar']}>
         <DemoItem>
-            <DateCalendar defaultValue={dayjs()} readOnly />
+            <DateCalendar defaultValue={dayjs()}  readOnly />
         </DemoItem>
       </DemoContainer>
     </LocalizationProvider>
