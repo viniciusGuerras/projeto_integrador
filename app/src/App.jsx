@@ -6,8 +6,9 @@ import Allocate from "./pages/Allocate.jsx";
 import Login from "./pages/Login.jsx"
 import Devolve from "./pages/Devolve.jsx";
 import Report from "./pages/Report.jsx";
-import Landing from "./components/Landing.jsx"
-
+import Material from "./pages/Material.jsx";
+import Room from "./pages/Room.jsx";
+import User from "./pages/User.jsx";
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
           <Route path="/rent" element={<Allocate />} />
           <Route path="/devolute" element={<Devolve />}/>
           <Route path="/report" element={<Report />}/>
+          <Route path="/material" element={<Material />} />
+          <Route path="/room" element={<Room />} />
+          <Route path="/user" element={<User />} />
         </Route>
 
         <Route path="/" element={<AuthLayout />}>
