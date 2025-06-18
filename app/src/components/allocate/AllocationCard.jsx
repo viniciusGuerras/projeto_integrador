@@ -1,13 +1,14 @@
 import Button from "../ui/Button";
 
-export default function AllocationCard({identifier, day, onEdit, onRemove}){
+export default function AllocationCard({key, identifier, day, onEdit, onRemove}){
     const formattedDate = new Date(day).toLocaleDateString("pt-BR", {
             day: "2-digit",
             month: "long",
         });
 
     return(
-        <div className="flex items-center bg-slate-200 border-0 border-b-2 border-slate-300 p-5 box-border text-slate-900">
+        <div className="flex items-center border-0 border-b-2 border-slate-100 p-5 box-border text-slate-900">
+            <p>{key}</p>
             <h2 className="text-xl mr-3">
                 {identifier}
             </h2>

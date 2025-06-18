@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../ui/Button";
 
-export default function AllocationEditOverlay({open, tab, initialData, onClose, onSubmit }) {
+export default function AllocationEditOverlay({open, tab, onClose, onSubmit, initialData }) {
     const [selectedDay, setSelectedDay] = useState("");
 
     const handleSubmit = () => {
@@ -44,7 +44,7 @@ export default function AllocationEditOverlay({open, tab, initialData, onClose, 
                 variant="terciary"
                 size="md"
                 onClick={handleSubmit}
-                disabled={!selectedIdentifier || !selectedDay}
+                disabled={!selectedDay}
             >
                 Modificar
             </Button>
