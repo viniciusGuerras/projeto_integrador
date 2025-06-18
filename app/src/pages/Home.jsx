@@ -1,8 +1,23 @@
 import PieChart from "../components/home/PieChart.jsx";
 import Calendar from "../components/home/Calendar.jsx";
 
-export default function Home() {
+function RecentCard({name, code, type, description}){
+    return(
+        <div className="flex flex-col gap-3">
+            <div className="bg-white rounded-lg p-6 flex flex-col gap-3">
+                <div className="flex">
+                    <h2 className="text-2xl m-0">{name}</h2>
+                    <p className="text-slate-400 ml-auto">{code}</p>
+                </div>
+                <p></p>
+                <p className="text-slate-400">{description}</p>
+                <button className="bg-green-300 text-slate-900 self-end">Reservar</button>
+            </div>
+        </div>
+    );
+}
 
+export default function Home() {
     //placeholder data for pie chart
     const slateShades = [
         '#64748B', // slate-500
@@ -12,9 +27,16 @@ export default function Home() {
     const sampleData = [10, 20, 30];
 
     return (
-        <div className="h-full w-full flex flex-col items-center justify-center px-16 gap-3">
-            <div className="grid grid-cols-[1fr_.75fr_1fr] grid-rows-2 gap-3">
-
+        <div className="h-full w-full flex flex-col items-center px-4 justify-center gap-3">
+            <div className="text-black bh-white w-full flex flex-col">
+                <div className="grid grid-cols-4 gap-3 ">
+                    <h1 className="text-5xl">Bem vindo, Marcia</h1>
+                    <RecentCard name={"301-B"} code={"AJDI-232A"} type={"sala"} description={"sala de computadores"}/>
+                    <RecentCard name={"Claudio"} code={"CLDO-2KS3"} type={"objeto"} description={"vendedor de salame"}/>
+                    <RecentCard name={"Tesoura"} code={"TSRA-123B"} type={"material"} description={"para cortar"}/>
+                </div>
+            </div>
+            <div className="w-full grid grid-cols-[1fr_.75fr_1fr] grid-rows-2 gap-3">
                 <div className="bg-white text-slate-800 row-span-2 rounded-lg shadow-sm flex flex-col items-start justify-start p-6">
                     <div className="flex gap-2 items-center justify-center"> 
                         <h2 className="text-xl font-semibold mb-4">Notificações</h2>

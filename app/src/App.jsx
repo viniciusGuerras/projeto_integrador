@@ -19,7 +19,6 @@ export default function App(){
         <Route element={<Layout />}>
           <Route path="/home" element={<Home />} />
           <Route path="/allocate" element={<Allocate />} />
-          <Route path="/devolute" element={<Devolve />}/>
           <Route path="/report" element={<Report />}/>
           <Route path="/profile" element={<Profile />}/>
           <Route path="/material" element={<Material />} />

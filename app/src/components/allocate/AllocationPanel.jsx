@@ -87,7 +87,7 @@ export default function AllocationPanel(){
                 <Button variant="terciary" size="md" onClick={() => toggleOverlay(true)}>Nova Reserva</Button>
 
                 <AllocationOverlay 
-                    tab= {activeTab === "classrooms" ? "salas" : "materiais"}
+                    tab={activeTab === "classrooms" ? "salas" : "materiais"}
                     options = {activeTab === "classrooms" ? classroomOptions : materialOptions}
                     open={overlayOpen}
                     onClose={() => toggleOverlay(false)}
