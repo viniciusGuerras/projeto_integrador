@@ -16,6 +16,14 @@ export default function Menu() {
           <li>
             <a
               className="block text-gray-700 hover:text-blue-700"
+              href="http://localhost:5173/manage"
+            >
+              Cadastrar items
+            </a>
+          </li>
+          <li>
+            <a
+              className="block text-gray-700 hover:text-blue-700"
               href="http://localhost:5173/report"
             >
               Gerar relatório
