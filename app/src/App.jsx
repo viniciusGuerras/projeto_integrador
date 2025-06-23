@@ -1,37 +1,31 @@
-import Home from "./pages/Home.jsx"
-import Layout from "./components/layouts/Layout.jsx"
-import AuthLayout from "./components/layouts/AuthLayout.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AuthLayout from "./components/layouts/AuthLayout.jsx";
+import Layout from "./components/layouts/Layout.jsx"
 import Allocate from "./pages/Allocate.jsx";
-import Login from "./pages/Login.jsx"
-import Devolve from "./pages/Devolve.jsx";
+import Manage from "./pages/Manage.jsx";
+import Profile from "./pages/Profile.jsx";
 import Report from "./pages/Report.jsx";
-import Landing from "./components/Landing.jsx"
+import Login from "./pages/Login.jsx"
+import Home from "./pages/Home.jsx"
 
 
-function App() {
+export default function App(){
   return (
     <Router>
       <Routes>
-        
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="/rent" element={<Allocate />} />
-          <Route path="/devolute" element={<Devolve />}/>
+        <Route element={<Layout />}>
+          <Route path="/home" element={<Home />} />
+          <Route path="/allocate" element={<Allocate />} />
+          <Route path="/manage" element={<Manage />}/>
           <Route path="/report" element={<Report />}/>
+          <Route path="/profile" element={<Profile />}/>
         </Route>
 
-        <Route path="/login" element={<AuthLayout />}>
-          <Route index element={<Login />} />
-        </Route>
-
-        <Route path="/landing" element={<Landing />}>
-        </Route>
-
-
-      </Routes>
-    </Router>
+          <Route path="/" element={<AuthLayout />}>
+            <Route index element={<Login />} />
+          </Route>
+        </Routes>
+      </Router>
   );
 }
 
-export default App

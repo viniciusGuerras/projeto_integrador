@@ -30,9 +30,8 @@ export default function AllocationOverlay({open, tab, options, onClose, onSubmit
             onClick={(e) => e.stopPropagation()}
         >
             <h2 className="text-xl font-semibold mb-2">{tab}</h2>
-
             <label className="block mb-2 text-sm font-medium">
-            Fazer reserva
+                Fazer reserva
             </label>
             <select
             className="block w-full mb-4 px-3 py-2 bg-slate-100 border rounded focus:outline-none"
