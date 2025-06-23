@@ -88,6 +88,7 @@ export default function AddRoom({isOpen, onClose, onSubmit}) {
             value={room.qtdCadeiras} 
             onChange={handleChange}
             className="border p-2 rounded"
+            min={1}
           />
       
           <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">

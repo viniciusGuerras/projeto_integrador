@@ -104,6 +104,7 @@ export default function AddMaterial({isOpen, onClose, onSubmit}) {
             value={material.quantidade} 
             onChange={handleChange}
             className="border p-2 rounded"
+            min={1}
           />
 
           <select
@@ -118,13 +119,14 @@ export default function AddMaterial({isOpen, onClose, onSubmit}) {
             ))}
           </select>
 
-          <textarea
+          <input 
+            type="date" 
             name="dataCompra"
-            placeholder="Data de Compra (DD/MM/AAAA)"
+            placeholder="Data de Nascimento (DD/MM/AAAA)"
             value={material.dataCompra}
             onChange={handleChange}
             className="border p-2 rounded"
-          ></textarea>
+          ></input>
 
           <select
             name="disponibilidade"
