@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AddMaterial({isOpen, onClose}) {
+export default function AddMaterial({isOpen, onClose, onSubmit}) {
   const [material, setMaterial] = useState({
     numeracao: '',
     nome: '',
@@ -26,13 +26,16 @@ export default function AddMaterial({isOpen, onClose}) {
     e.preventDefault();
 
     // Validação simples
-    if (!material.nome || !material.descricao || !material.tipo) {
+    if (!material.numeracao || !material.descricao || !material.tipo || !material.quantidade ||
+      !material.estado || !material.dataCompra || !material.disponibilidade) {
       setMensagem('Por favor, preencha os campos obrigatórios.');
       return;
     }
 
     // Aqui você pode salvar no backend, por exemplo
     console.log('Material cadastrado:', material);
+
+    onSubmit(material);
 
     setMensagem('Material cadastrado com sucesso!');
     setMaterial({

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AddUser({isOpen, onClose}) {
+export default function AddUser({isOpen, onClose, onSubmit}) {
   const [user, setUser] = useState({
     matricula: '',
     nome: '',
@@ -17,7 +17,7 @@ export default function AddUser({isOpen, onClose}) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setuser((prev) => ({ ...prev, [name]: value }));
+    setUser((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
@@ -32,8 +32,10 @@ export default function AddUser({isOpen, onClose}) {
     // Aqui você pode salvar no backend, por exemplo
     console.log('Usuário cadastrado:', user);
 
+    onSubmit(user);
+
     setMensagem('Usuário cadastrado com sucesso!');
-    setuser({
+    setUser({
     matricula: '',
     nome: '',
     cpf: '',
@@ -99,13 +101,13 @@ export default function AddUser({isOpen, onClose}) {
             className="border p-2 rounded"
           />
 
-          <textarea
+          <input type="date"
             name="dataNascimento"
             placeholder="Data de Nascimento (DD/MM/AAAA)"
             value={user.dataNascimento}
             onChange={handleChange}
             className="border p-2 rounded"
-          ></textarea>
+          ></input>
 
           <select
             name="tipo"

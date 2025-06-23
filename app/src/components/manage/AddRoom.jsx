@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AddRoom({isOpen, onClose}) {
+export default function AddRoom({isOpen, onClose, onSubmit}) {
   const [room, setroom] = useState({
     numeracao: '',
     especializacao: '',
@@ -21,13 +21,15 @@ export default function AddRoom({isOpen, onClose}) {
     e.preventDefault();
 
     // Validação simples
-    if (!room.nome || !room.descricao || !room.tipo) {
+    if (!room.numeracao || !room.especializacao || !room.disponibilidade || !room.qtdCadeiras) {
       setMensagem('Por favor, preencha os campos obrigatórios.');
       return;
     }
 
     // Aqui você pode salvar no backend, por exemplo
     console.log('Sala cadastrada:', room);
+
+    onSubmit(room);
 
     setMensagem('Sala cadastrado com sucesso!');
     setroom({
