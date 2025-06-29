@@ -26,3 +26,6 @@ Vinícius Guerra - 20230003790
 ## Teoria
 **Modelo conceitual do banco**
 ![alt text](./images/modelo_conceitual.png)
+
+**Modelo lógico relacional do banco**
+![alt text](./images/modelo_logico.png)
