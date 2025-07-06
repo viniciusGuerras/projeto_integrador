@@ -6,7 +6,7 @@ exports.findUserByRegistration = async (id) => {
 };
 
 exports.findAllUsers = async () => {
-    const result = await db.query("SELECT * FROM users");
+    const result = await db.query("SELECT * FROM users WHERE ativo != false");
     return result;
 }
 
@@ -23,8 +23,8 @@ exports.createUser = async (user) => {
     } = user;
 
     const result = await db.query(
-        `INSERT INTO users (matricula, senha, cpf, nome, telefone, email, datanc, tipo)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING matricula, nome, tipo`,
+        `INSERT INTO users (matricula, senha, cpf, nome, telefone, email, datanc, tipo, ativo)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING matricula, nome, tipo`,
         [
             matricula,
             senha,
@@ -33,6 +33,45 @@ exports.createUser = async (user) => {
             telefone,
             email,
             new Date(datanc), 
+            tipo, 
+            true
+        ]
+    );
+
+    return result;
+};
+
+exports.updateUser = async (updatedUser) => {
+    const {
+        matricula,
+        senha,
+        cpf,
+        nome,
+        telefone,
+        email,
+        datanc,
+        tipo
+    } = updatedUser;
+
+    const result = await db.query(
+        `UPDATE users
+         SET senha = $2,
+             cpf = $3,
+             nome = $4,
+             telefone = $5,
+             email = $6,
+             datanc = $7,
+             tipo = $8
+         WHERE matricula = $1
+         RETURNING matricula, nome, tipo`,
+        [
+            matricula,
+            senha,
+            cpf,
+            nome,
+            telefone,
+            email,
+            new Date(datanc),
             tipo
         ]
     );
@@ -40,3 +79,17 @@ exports.createUser = async (user) => {
     return result;
 };
 
+exports.removeUser = async (matricula) => {
+    const result = await db.query(
+    `UPDATE users
+        SET 
+            ativo = $2
+        WHERE matricula = $1
+        RETURNING matricula, nome, tipo`,
+    [
+        matricula,
+        false
+    ]);
+
+    return result;
+}

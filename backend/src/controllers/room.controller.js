@@ -20,14 +20,14 @@ exports.getRoomByNumber = async (req, res) => {
 
 exports.getRooms = (req, res) => {
     repository.findAllRooms()
-        .then((roomList) => {
-            if (roomList && roomList.length > 0) {
-                res.status(200).json({ message: "Salas recuperadas com sucesso", room: roomList });
-            } 
-            else {
-                res.status(200).json({ message: "Nenhuma sala encontrada", rooms: [] });
-            }
-        });
+    .then((roomList) => {
+        if (roomList && roomList.length > 0) {
+            res.status(200).json({ message: "Salas recuperadas com sucesso", room: roomList });
+        } 
+        else {
+            res.status(200).json({ message: "Nenhuma sala encontrada", rooms: [] });
+        }
+    });
 };
 
 exports.createRoom = async (req, res) => {
@@ -47,9 +47,7 @@ exports.createRoom = async (req, res) => {
         return res.status(400).json({ error: `Disponibilidade precisa ter um valor de: ${allowedDisponibility.join(', ')}` });
     }
     
-
     try {
-        
         const roomData = {
             numeracao,
             especificacao, 
@@ -58,9 +56,9 @@ exports.createRoom = async (req, res) => {
         };
 
         const newRoom = await repository.createRoom(roomData); 
-
-        res.status(201).json({ message: "Sala criada com sucesso", room: newRoom });
-    } catch (err) {
+        res.status(201).json({ message: "Sala criada com sucesso", room: newRoom});
+    }
+    catch (err) {
         console.error("Erro criando a sala:", err);
         res.status(500).json({
             error: "Erro criando a sala",
@@ -68,3 +66,4 @@ exports.createRoom = async (req, res) => {
         });
     }
 };
+
