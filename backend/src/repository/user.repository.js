@@ -5,7 +5,7 @@ exports.findUserByRegistration = async (id) => {
     return result;
 };
 
-exports.findAllUsers = async (id) => {
+exports.findAllUsers = async () => {
     const result = await db.query("SELECT * FROM users");
     return result;
 }

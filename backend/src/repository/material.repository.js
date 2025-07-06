@@ -1,11 +1,45 @@
-const repository = require("../repository/material.repository");
+const db = require("../config/db");
 
-const getMaterialByNumber = async (req, res) => {
-    const materialId = req.params.materialId;
-    repository.findMaterialByNumber(materialId)
-    .then((fetchedMaterial) => {
-        if (!fetchedMaterial) => {
-            res.
-        }
-    })
+exports.findMaterialByNumber = async (id) => {
+    const result = await db.oneOrNone("SELECT * FROM material WHERE numeracao = $1", [id]);
+    return result;
+};
+
+exports.findAllMaterials = async () => {
+    const result = await db.query("SELECT * FROM material");
+    return result;
 }
+
+exports.createMaterial = async (material) => {
+    const {
+        numeracao,
+        nmrsala,
+        qtdmaterial, 
+        disponibilidade, 
+        quantidade, 
+        nome, 
+        dscr, 
+        estado, 
+        datacpra, 
+        tipo
+    } = material;
+
+    const result = await db.query(
+        `INSERT INTO users (numeracao, nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr, estado, datacpra, tipo)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        [
+            numeracao,
+            nmrsala,
+            qtdmaterial, 
+            disponibilidade, 
+            quantidade, 
+            nome, 
+            dscr, 
+            estado, 
+            new Date(datacpra), 
+            tipo
+        ]
+    );
+
+    return result;
+};
