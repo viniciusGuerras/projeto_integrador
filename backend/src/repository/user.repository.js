@@ -1,21 +1,42 @@
-const db = require("../config/db"); 
+const db = require("../config/db");
 
-exports.findUserById = async (id) => {
-    const result = await db.query("SELECT * FROM users WHERE id = $1", [id]);
-    return result.rows[0];
+exports.findUserByRegistration = async (id) => {
+    const result = await db.oneOrNone("SELECT * FROM users WHERE matricula = $1", [id]);
+    return result;
 };
 
 exports.findAllUsers = async (id) => {
     const result = await db.query("SELECT * FROM users");
-    return result.rows[0];
+    return result;
 }
 
 exports.createUser = async (user) => {
-    const {Registration, Password, CPF, Name, Phone, Email, BirthDate, Type} = user;
+    const {
+        matricula,
+        senha,
+        cpf,
+        nome,
+        telefone,
+        email,
+        datanc,
+        tipo
+    } = user;
+
     const result = await db.query(
-        "INSERT INTO users (Registration, Password, CPF, Name, Phone, Email, BirthDate, Type) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
-        [Registration, Password, CPF, Name, Phone, Email, BirthDate, Type]
+        `INSERT INTO users (matricula, senha, cpf, nome, telefone, email, datanc, tipo)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        [
+            matricula,
+            senha,
+            cpf,
+            nome,
+            telefone,
+            email,
+            new Date(datanc), 
+            tipo
+        ]
     );
-    return result.rows[0];
+
+    return result;
 };
 
