@@ -1,42 +1,52 @@
 const repository = require("../repository/room.repository"); 
 
 exports.getRoomByNumber = async (req, res) => {
-    const roomId = req.params.roomId;
+    const roomId = req.params.classroomId; 
 
     repository.findRoomByNumber(roomId)
     .then((fetchedRoom) => {
         if(!fetchedRoom) {
-            res.status(404).json({ error: "Room not found"});
+            res.status(404).json({ error: "Sala não encontrada" });
         }
         else {
-            res.status(200).json({ message: "Room retrieved sucessfully", room : fetchedRoom});
+            res.status(200).json({ message: "Sala recuperada com sucesso", room : fetchedRoom });
         }
     })
     .catch((err) => {
-        console.error("Error fetching room by number:", err);
-        res.status(500).json({ message: "An error occurred" });
+        console.error("Erro ao buscar sala pelo número:", err);
+        res.status(500).json({ message: "Ocorreu um erro" });
     });
 };
 
 exports.getRooms = (req, res) => {
     repository.findAllRooms()
         .then((roomList) => {
-            if (roomList && roomListlength > 0) {
-                res.status(200).json({ message: "Room fetched successfully", room: roomList});
+            if (roomList && roomList.length > 0) {
+                res.status(200).json({ message: "Salas recuperadas com sucesso", room: roomList });
             } 
             else {
-                res.status(200).json({ message: "No rooms found", rooms: [] });
+                res.status(200).json({ message: "Nenhuma sala encontrada", rooms: [] });
             }
         });
 };
 
 exports.createRoom = async (req, res) => {
-    const { numeracao, especificacao, disponibilidade, qtdcadeiras } = req.body;
+    const { numeracao, especificacao, disponibilidade, qtdcadeira } = req.body;
     console.log("req.body:", req.body);
 
-    if (!numeracao || !especificacao || !disponibilidade || !qtdcadeiras) {
-        return res.status(400).json({ error: 'Missing required room fields' });
+    if (!numeracao || !especificacao || !disponibilidade || !qtdcadeira) {
+        return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
     }
+
+    if(qtdcadeira < 0){
+        return res.status(400).json({ error: 'qtdcadeira precisa ser maior que zero' });
+    }
+    
+    const allowedDisponibility = ['disponível', 'indisponível'];
+    if (!allowedDisponibility.includes(disponibilidade.toLowerCase())) {
+        return res.status(400).json({ error: `Disponibilidade precisa ter um valor de: ${allowedDisponibility.join(', ')}` });
+    }
+    
 
     try {
         
@@ -44,16 +54,16 @@ exports.createRoom = async (req, res) => {
             numeracao,
             especificacao, 
             disponibilidade, 
-            qtdcadeiras
+            qtdcadeira
         };
 
         const newRoom = await repository.createRoom(roomData); 
 
-        res.status(201).json({ message: "Room created successfully", room: newRoom });
+        res.status(201).json({ message: "Sala criada com sucesso", room: newRoom });
     } catch (err) {
-        console.error("Error creating room:", err);
+        console.error("Erro criando a sala:", err);
         res.status(500).json({
-            error: "Error creating room",
+            error: "Erro criando a sala",
             detail: err?.message || JSON.stringify(err)
         });
     }

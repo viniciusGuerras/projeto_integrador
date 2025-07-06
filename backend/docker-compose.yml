@@ -1,13 +1,10 @@
-# Use version 3.8 of the Docker Compose file format for modern features.
 version: "3.8"
 
-# Define the services (containers) for the application.
 services:
   # Define the database service.
   db:
     # Use the official PostgreSQL image from Docker Hub.
     image: postgres
-    # Always restart the container if it stops.
     restart: always
     # Set the size of shared memory. 128MB is a reasonable default.
     shm_size: 128mb
@@ -27,6 +24,5 @@ services:
       # Use a named volume to persist the PostgreSQL data.
       - postgres_data:/var/lib/postgresql/data
 
-# Define the named volumes used by the services.
 volumes:
   postgres_data:

@@ -2,42 +2,42 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const repository = require("../repository/user.repository");
-
-const secretKey = process.env.JWT_SECRET || 'theBiggestSecretKeyToEverLive';
+const {jwtSecret} = require("../config/jwt.js")
 
 exports.login = async (req, res, next) => {
     const {registration, password} = req.body; 
 
     if (!registration || !password) {
-        return res.status(400).json({ message: 'Username and password required'});
+        return res.status(400).json({ message: 'Nome de usuário e senha são obrigatórios' });
     }
         
     try {
         const user = await repository.findUserByRegistration(registration); 
 
         if (!user) {
-            return res.status(401).json({ message: 'User not found'});
+            return res.status(401).json({ message: 'Usuário não encontrado' });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.senha || user.user_password);
 
         if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid password' });
+            return res.status(401).json({ message: 'Senha inválida' });
         }
-
 
         console.log(user);
         const token = jwt.sign(
             {
-                id: user.matricula, username: user.nome, role: user.tipo},
-                secretKey,
+                id: user.matricula, username: user.nome, role: user.tipo
+            },
+            jwtSecret,
             { 
                 expiresIn: '1h'
-            });
+            }
+        );
 
-            return res.json({ message: 'Login successful', token});
-    }catch(error){
-        console.error('Login error:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.json({ message: 'Login realizado com sucesso', token });
+    } catch(error) {
+        console.error('Erro no login:', error);
+        return res.status(500).json({ message: 'Erro interno do servidor' });
     }
 };

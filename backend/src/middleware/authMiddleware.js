@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const secretKey = process.env.JWT_SECRET || 'theBiggestSecretKeyToEverLive';
+const secretKey = 'theBiggestSecretKeyToEverLive';
+const {jwtSecret} = require("../config/jwt.js")
 
 exports.authenticateJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -11,7 +12,7 @@ exports.authenticateJWT = (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, secretKey);
+        const decoded = jwt.verify(token, jwtSecret);
         req.user = decoded;
         next();
     } catch (err) {
@@ -20,13 +21,12 @@ exports.authenticateJWT = (req, res, next) => {
         }
         return res.status(403).json({ message: 'Invalid token' });
     }
-
 };
 
 
 exports.authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
-    const userRole = req.user?.tipo;
+    const userRole = req.user?.role;
 
     if (!allowedRoles.includes(userRole)) {
       return res.status(403).json({ message: 'Access denied: insufficient permissions' });

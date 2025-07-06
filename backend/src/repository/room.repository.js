@@ -6,7 +6,7 @@ exports.findRoomByNumber = async (id) => {
 };
 
 exports.findAllRooms = async () => {
-    const result = await db.query("SELECT * FROM room");
+    const result = await db.query("SELECT * FROM sala");
     return result;
 }
 
@@ -15,17 +15,17 @@ exports.createRoom = async (room) => {
         numeracao,
         especificacao, 
         disponibilidade, 
-        qtdcadeiras
+        qtdcadeira
     } = room;
 
     const result = await db.query(
-        `INSERT INTO sala (numeracao, especificacao, disponibilidade, qtdcadeiras)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        `INSERT INTO sala (numeracao, especificacao, disponibilidade, qtdcadeira)
+        VALUES ($1, $2, $3, $4) RETURNING *`,
         [
             numeracao,
             especificacao,
             disponibilidade,
-            qtdcadeiras, 
+            qtdcadeira, 
         ]
     );
 
