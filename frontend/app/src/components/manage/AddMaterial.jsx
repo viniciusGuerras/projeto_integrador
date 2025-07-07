@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function AddMaterial({isOpen, onClose, onSubmit}) {
+export default function AddMaterial({isOpen, onClose}) {
   const [material, setMaterial] = useState({
     numeracao: '',
     nome: '',
@@ -26,16 +26,13 @@ export default function AddMaterial({isOpen, onClose, onSubmit}) {
     e.preventDefault();
 
     // Validação simples
-    if (!material.numeracao || !material.descricao || !material.tipo || !material.quantidade ||
-      !material.estado || !material.dataCompra || !material.disponibilidade) {
+    if (!material.nome || !material.descricao || !material.tipo) {
       setMensagem('Por favor, preencha os campos obrigatórios.');
       return;
     }
 
     // Aqui você pode salvar no backend, por exemplo
     console.log('Material cadastrado:', material);
-
-    onSubmit(material);
 
     setMensagem('Material cadastrado com sucesso!');
     setMaterial({
@@ -104,7 +101,6 @@ export default function AddMaterial({isOpen, onClose, onSubmit}) {
             value={material.quantidade} 
             onChange={handleChange}
             className="border p-2 rounded"
-            min={1}
           />
 
           <select
@@ -119,14 +115,13 @@ export default function AddMaterial({isOpen, onClose, onSubmit}) {
             ))}
           </select>
 
-          <input 
-            type="date" 
+          <textarea
             name="dataCompra"
-            placeholder="Data de Nascimento (DD/MM/AAAA)"
+            placeholder="Data de Compra (DD/MM/AAAA)"
             value={material.dataCompra}
             onChange={handleChange}
             className="border p-2 rounded"
-          ></input>
+          ></textarea>
 
           <select
             name="disponibilidade"

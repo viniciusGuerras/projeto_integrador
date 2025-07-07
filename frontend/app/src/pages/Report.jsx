@@ -5,7 +5,7 @@ export default function Report(){
 
     return(
         <div className="w-full flex items-center justify-center gap-3">
-            <div className="md:-full lg:w-1/3 h-fit p-6 bg-white text-slate-500 rounded-xl flex flex-col gap-3">
+            <div className="w-1/3 h-1/3 p-6 bg-white text-slate-500 rounded-xl flex flex-col gap-3">
                 <h1 className="text-xl text-slate-900 font-semibold">Relatório</h1>
                 <span className="border-b border-slate-300"></span>
                 <ul className="flex w-full items-start">

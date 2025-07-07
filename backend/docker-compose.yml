@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  # Define the database service.
+  db:
+    # Use the official PostgreSQL image from Docker Hub.
+    image: postgres
+    restart: always
+    # Set the size of shared memory. 128MB is a reasonable default.
+    shm_size: 128mb
+    # Set environment variables for the PostgreSQL container.
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: mydatabase
+    # Map port 5432 on the host to port 5432 in the container.
+    ports:
+      - "5433:5432"
+    # Define volumes for data persistence and initialization.
+    volumes:
+      # Mount the local ./postgres_init directory into the container's initialization directory.
+      # Any .sql scripts in here will be run when the container is first created.
+      - ./postgres_init:/docker-entrypoint-initdb.d
+      # Use a named volume to persist the PostgreSQL data.
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
