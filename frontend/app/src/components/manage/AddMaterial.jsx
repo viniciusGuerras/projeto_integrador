@@ -66,6 +66,8 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
 
     setMaterial({
       numeracao: '',
+      nmrsala: " ",
+      qntsala: " ",
       nome: '',
       descricao: '',
       tipo: '',
@@ -74,8 +76,6 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
       dataCompra: '',
       disponibilidade: '',
     });
-
-    setMensagem('Material cadastrado com sucesso!');
   };
 
   if (!isOpen) return null;

@@ -1,8 +1,5 @@
 const repository = require("../repository/material.repository");
 
-const bcrypt = require('bcrypt');
-const saltRounds = 10; 
-
 exports.getMaterialByNumber = async (req, res) => {
     const materialId = req.params.materialId;
 

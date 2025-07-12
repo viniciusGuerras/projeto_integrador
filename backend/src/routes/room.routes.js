@@ -5,7 +5,8 @@ const { authenticateJWT, authorizeRoles } = require("../middleware/authMiddlewar
 
 router.get("/",             authenticateJWT, authorizeRoles('admin'), controller.getRooms       );
 router.post("/",            authenticateJWT, authorizeRoles('admin'), controller.createRoom     );
-router.get("/:classroomId", authenticateJWT, authorizeRoles('admin'), controller.getRoomByNumber);
-router.patch("/:classroomId" , authenticateJWT, authorizeRoles('admin'), controller.updateRoom);
+router.get("/:numeracao", authenticateJWT, authorizeRoles('admin'), controller.getRoomByNumber);
+router.patch("/:numeracao" , authenticateJWT, authorizeRoles('admin'), controller.updateRoom);
+router.delete("/:numeracao" , authenticateJWT, authorizeRoles('admin'), controller.removeRoom);
 
 module.exports = router;

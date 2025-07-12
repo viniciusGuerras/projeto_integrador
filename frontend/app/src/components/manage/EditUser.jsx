@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function EditUser({ isOpen, onClose, initialUser, onSubmit, onError }) {
+export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }) {
     const [user, setUser] = useState({
         matricula: '',
         senha: '',
@@ -21,30 +21,30 @@ export default function EditUser({ isOpen, onClose, initialUser, onSubmit, onErr
     ];
 
     useEffect(() => {
-        if (isOpen && initialUser) {
+        if (isOpen && initial) {
             
             let formattedDate = '';
-            if (initialUser.datanc) {
-                const dateObj = new Date(initialUser.datanc);
+            if (initial.datanc) {
+                const dateObj = new Date(initial.datanc);
                 if (!isNaN(dateObj.getTime())) {
                     formattedDate = dateObj.toISOString().slice(0, 10);
                 }
             }
 
             setUser({
-                matricula: initialUser.matricula || '',
+                matricula: initial.matricula || '',
                 senha: '', 
-                cpf: initialUser.cpf || '',
-                nome: initialUser.nome || '',
-                telefone: initialUser.telefone || '',
-                email: initialUser.email || '',
+                cpf: initial.cpf || '',
+                nome: initial.nome || '',
+                telefone: initial.telefone || '',
+                email: initial.email || '',
                 dataNascimento: formattedDate || '',
-                tipo: initialUser.tipo || '',
+                tipo: initial.tipo || '',
             });
             setMensagem('');
             setServerError('');
         }
-    }, [isOpen, initialUser]);
+    }, [isOpen, initial]);
 
     useEffect(() => {
         if (typeof onError === "string") {

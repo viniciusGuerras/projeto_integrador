@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function AddRoom({ isOpen, onClose, initialClassroom, onSubmit, onError }) {
+export default function AddRoom({ isOpen, onClose, initial, onSubmit, onError }) {
   const [room, setRoom] = useState({
     numeracao: '',
     especificacao: '',
@@ -17,14 +17,14 @@ export default function AddRoom({ isOpen, onClose, initialClassroom, onSubmit, o
     if (isOpen) {
       setMensagem('');
       setServerError('');
-      if (initialClassroom) {
+      if (initial) {
         setRoom({
-          numeracao: initialClassroom.numeracao || '',
-          especificacao: initialClassroom.especificacao || '',
-          disponibilidade: initialClassroom.disponibilidade
-            ? capitalizeFirstLetter(initialClassroom.disponibilidade)
+          numeracao: initial.numeracao || '',
+          especificacao: initial.especificacao || '',
+          disponibilidade: initial.disponibilidade
+            ? capitalizeFirstLetter(initial.disponibilidade)
             : '',
-          qtdcadeira: initialClassroom.qtdcadeira || '',
+          qtdcadeira: initial.qtdcadeira || '',
         });
       } else {
         setRoom({
@@ -35,7 +35,7 @@ export default function AddRoom({ isOpen, onClose, initialClassroom, onSubmit, o
         });
       }
     }
-  }, [isOpen, initialClassroom]);
+  }, [isOpen, initial]);
 
   function capitalizeFirstLetter(str) {
     if (!str) return '';

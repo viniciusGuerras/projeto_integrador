@@ -68,7 +68,6 @@ export default function ManagePanel() {
         console.log("trying to hit:", url)
 
         try{
-
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -192,7 +191,7 @@ export default function ManagePanel() {
                 onClose: () => toggleOverlay(false),
                 onSubmit: handleEditSubmit,
                 onError: submitError,
-                initialUser: editItem
+                initial: editItem
             };
             if (activeTab === "user") return <EditUser {...commonEditProps}/>
             if (activeTab === "classroom") return <EditRoom {...commonEditProps}/>;

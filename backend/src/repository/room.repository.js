@@ -31,3 +31,44 @@ exports.createRoom = async (room) => {
 
     return result;
 };
+
+exports.updateRoom = async (roomData) => {
+    const {
+        numeracao,
+        especificacao,
+        disponibilidade,
+        qtdcadeira
+    } = roomData;
+
+    const result = await db.query(
+        `UPDATE sala
+         SET especificacao = $2,
+             disponibilidade = $3,
+             qtdcadeira = $4
+         WHERE numeracao = $1
+         RETURNING *`,
+        [
+            numeracao,
+            especificacao,
+            disponibilidade,
+            qtdcadeira
+        ]
+    );
+
+    return result; 
+};
+
+exports.removeRoom = async (numeracao) => {
+    const result = await db.query(
+    `UPDATE sala
+        SET 
+            ativo = $2
+        WHERE numeracao = $1
+        RETURNING numeracao, especificacao`,
+    [
+        numeracao,
+        false
+    ]);
+
+    return result;
+}

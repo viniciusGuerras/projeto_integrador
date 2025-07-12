@@ -141,6 +141,7 @@ exports.createUser = async (req, res) => {
 };
 
 function validateUserFields(matricula, senha, cpf, nome, telefone, email, datanc, tipo){
+    console.log(matricula, senha, cpf, nome, telefone, email, datanc, tipo);
     if (!matricula || !senha || !cpf || !nome || !telefone || !email || !datanc || !tipo) {
         return ErrorCodes.MISSING_FIELDS;
     }
@@ -179,7 +180,7 @@ function validateUserFields(matricula, senha, cpf, nome, telefone, email, datanc
 };
 
 exports.updateUser = async (req, res) => {
-    const matricula = req.params.registration; 
+    const matricula = req.params.matricula; 
     const {senha, cpf, nome, telefone, email, datanc, tipo } = req.body;
 
     const validationError = validateUserFields(matricula, senha, cpf, nome, telefone, email, datanc, tipo);
