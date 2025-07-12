@@ -1,11 +1,13 @@
-const express = require("express");
-const app = express();
-const userRoutes = require("./routes/user.routes.js");
-const authRoutes = require("./routes/auth.routes.js");
 const materialRoutes = require("./routes/material.routes.js");
 const classroomRoutes = require("./routes/room.routes.js");
+const userRoutes = require("./routes/user.routes.js");
+const authRoutes = require("./routes/auth.routes.js");
+const express = require("express");
+const cors = require('cors');
+const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);

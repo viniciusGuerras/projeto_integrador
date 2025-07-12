@@ -6,7 +6,8 @@ const { authenticateJWT, authorizeRoles } = require("../middleware/authMiddlewar
 router.get("/",              authenticateJWT, authorizeRoles('admin'), controller.getUsers             );
 router.post("/",             authenticateJWT, authorizeRoles('admin'), controller.createUser           );
 router.patch("/:matricula" , authenticateJWT, authorizeRoles('admin'), controller.updateUser           );
-router.get("/:matricula"   , authenticateJWT, authorizeRoles('admin'), controller.getUserByRegistration);
+router.get("/profile/:matricula"   , authenticateJWT, authorizeRoles('admin'), controller.getUserByRegistration);
+router.get("/profile"      , authenticateJWT, controller.getUserProfile);
 router.delete("/:matricula", authenticateJWT, authorizeRoles('admin'), controller.removeUser           );
 
 module.exports = router;

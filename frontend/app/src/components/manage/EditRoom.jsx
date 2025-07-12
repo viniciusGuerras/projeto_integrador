@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
+export default function AddRoom({ isOpen, onClose, initialClassroom, onSubmit, onError }) {
   const [room, setRoom] = useState({
     numeracao: '',
     especificacao: '',
@@ -17,8 +17,30 @@ export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
     if (isOpen) {
       setMensagem('');
       setServerError('');
+      if (initialClassroom) {
+        setRoom({
+          numeracao: initialClassroom.numeracao || '',
+          especificacao: initialClassroom.especificacao || '',
+          disponibilidade: initialClassroom.disponibilidade
+            ? capitalizeFirstLetter(initialClassroom.disponibilidade)
+            : '',
+          qtdcadeira: initialClassroom.qtdcadeira || '',
+        });
+      } else {
+        setRoom({
+          numeracao: '',
+          especificacao: '',
+          disponibilidade: '',
+          qtdcadeira: '',
+        });
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, initialClassroom]);
+
+  function capitalizeFirstLetter(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
 
   useEffect(() => {
     if (typeof onError === "string") {
@@ -42,6 +64,8 @@ export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
       return;
     }
 
+    const numeracao = room.numeracao;
+
     if (parseInt(room.qtdcadeira) <= 0) {
       setMensagem('A quantidade de cadeiras precisa ser maior que zero.');
       return;
@@ -51,15 +75,10 @@ export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
       ...room,
       disponibilidade: room.disponibilidade.toLowerCase(),
     };
+    delete payload.numeracao;  
 
-    onSubmit(payload);
+    onSubmit(numeracao, payload);
 
-    setRoom({
-      numeracao: '',
-      especificacao: '',
-      disponibilidade: '',
-      qtdcadeira: '',
-    });
   };
 
   if (!isOpen) return null;
@@ -73,7 +92,7 @@ export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
         className="max-w-md mx-auto mt-10 p-6 border rounded shadow bg-white"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-xl font-bold mb-4">Cadastro de Sala</h2>
+        <h2 className="text-xl font-bold mb-4">Atualização de Sala</h2>
         {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
         {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

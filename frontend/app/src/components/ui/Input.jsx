@@ -1,5 +1,5 @@
 
-export default function Input({label, type, placeholder, styleLabel, styleInput}){
+export default function Input({label, type, placeholder, styleLabel, styleInput, value, onChange}){
     return(
         <div className="space-y-1">
             <label
@@ -13,6 +13,8 @@ export default function Input({label, type, placeholder, styleLabel, styleInput}
                 id={label}
                 placeholder={placeholder}
                 className={styleInput}
+                value={value}
+                onChange={onChange}
             />
         </div>
     );

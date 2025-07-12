@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function AddUser({isOpen, onClose, onSubmit, onError}) {
+export default function EditUser({ isOpen, onClose, initialUser, onSubmit, onError }) {
     const [user, setUser] = useState({
         matricula: '',
         senha: '',
@@ -14,7 +13,7 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
     });
 
     const [mensagem, setMensagem] = useState('');
-    const [serverError, setServerError] = useState(''); 
+    const [serverError, setServerError] = useState('');
 
     const tipo = [
         { label: 'Administrador', value: 'admin' },
@@ -22,15 +21,25 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
     ];
 
     useEffect(() => {
-        if (isOpen) {
-        setMensagem('');
-        setServerError('');
+        if (isOpen && initialUser) {
+            setUser({
+                matricula: initialUser.matricula || '',
+                senha: '', 
+                cpf: initialUser.cpf || '',
+                nome: initialUser.nome || '',
+                telefone: initialUser.telefone || '',
+                email: initialUser.email || '',
+                dataNascimento: initialUser.datanc || '',
+                tipo: initialUser.tipo || '',
+            });
+            setMensagem('');
+            setServerError('');
         }
-    }, [isOpen]);
+    }, [isOpen, initialUser]);
 
     useEffect(() => {
         if (typeof onError === "string") {
-        setServerError(onError);
+            setServerError(onError);
         }
     }, [onError]);
 
@@ -44,18 +53,18 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!user.nome ) {
-        setMensagem('Por favor, preencha os campos obrigatórios.');
-        return;
+        if (!user.nome) {
+            setMensagem('Por favor, preencha os campos obrigatórios.');
+            return;
         }
 
         const payload = {
             ...user,
             datanc: user.dataNascimento,
-            };
+        };
         delete payload.dataNascimento;
 
-        console.log('Tentando cadastramento de:', user);
+        console.log('Tentando edição de:', user);
 
         onSubmit(payload);
     };
@@ -64,32 +73,31 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
 
     return (
         <div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-        onClick={onClose}
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            onClick={onClose}
         >
-        <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow bg-white" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-xl font-bold mb-4">Cadastro de Usuário</h2>
-            {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
-            {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow bg-white" onClick={(e) => e.stopPropagation()}>
+                <h2 className="text-xl font-bold mb-4">Edição de Usuário</h2>
+                {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
+                {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <input
                         type="text"
                         name="matricula"
                         placeholder="Matrícula: *"
                         value={user.matricula}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded"
                     />
 
                     <input
                         type="password"
                         name="senha"
-                        placeholder="* * * * * * *"
+                        placeholder="Nova senha (deixe vazio para manter)"
                         value={user.senha}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded"
                     />
-
 
                     <input
                         type="text"
@@ -97,7 +105,7 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                         placeholder="Nome: *"
                         value={user.nome}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded"
                     />
 
                     <input
@@ -106,7 +114,7 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                         placeholder="CPF: *"
                         value={user.cpf}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded"
                     />
 
                     <input
@@ -115,31 +123,31 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                         placeholder="Email: *"
                         value={user.email}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded"
                     />
 
                     <input
                         type="text"
                         name="telefone"
                         placeholder="Telefone: *"
-                        value={user.telefone} 
+                        value={user.telefone}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded"
                     />
 
-                    <input type="date"
+                    <input
+                        type="date"
                         name="dataNascimento"
-                        placeholder="Data de Nascimento (DD/MM/AAAA)"
                         value={user.dataNascimento}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
-                    ></input>
+                        className="border p-2 rounded"
+                    />
 
                     <select
                         name="tipo"
                         value={user.tipo}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded"
                     >
                         <option value="">Selecione o tipo de usuário *</option>
                         {tipo.map((t) => (
@@ -147,11 +155,11 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                         ))}
                     </select>
 
-                    <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-                        Cadastrar
+                    <button type="submit" className="bg-green-600 text-white py-2 px-4 rounded">
+                        Salvar
                     </button>
                 </form>
             </div>
         </div>
     );
-};
+}

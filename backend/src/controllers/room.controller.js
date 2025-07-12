@@ -9,7 +9,7 @@ exports.getRoomByNumber = async (req, res) => {
             res.status(404).json({ error: "Sala não encontrada" });
         }
         else {
-            res.status(200).json({ message: "Sala recuperada com sucesso", room : fetchedRoom });
+            res.status(200).json({ message: "Sala recuperada com sucesso", classroom : fetchedRoom });
         }
     })
     .catch((err) => {
@@ -22,10 +22,10 @@ exports.getRooms = (req, res) => {
     repository.findAllRooms()
     .then((roomList) => {
         if (roomList && roomList.length > 0) {
-            res.status(200).json({ message: "Salas recuperadas com sucesso", room: roomList });
+            res.status(200).json({ message: "Salas recuperadas com sucesso", classrooms: roomList });
         } 
         else {
-            res.status(200).json({ message: "Nenhuma sala encontrada", rooms: [] });
+            res.status(200).json({ message: "Nenhuma sala encontrada", classrooms: [] });
         }
     });
 };
@@ -54,6 +54,8 @@ exports.createRoom = async (req, res) => {
             disponibilidade, 
             qtdcadeira
         };
+        
+        console.log("salvando", roomData);
 
         const newRoom = await repository.createRoom(roomData); 
         res.status(201).json({ message: "Sala criada com sucesso", room: newRoom});
