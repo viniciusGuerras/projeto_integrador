@@ -247,10 +247,10 @@ export default function ManagePanel() {
             if (activeTab === "user") {
                 return (
                     <tr key={index} className="odd:bg-slate-200 even:bg-white">
-                        <td>{item.matricula}</td>
-                        <td>{item.nome}</td>
+                        <td className="pl-3">{item.matricula}</td>
+                        <td className="whitespace-normal break-words">{item.nome}</td>
                         <td>{item.tipo}</td>
-                        <td>
+                        <td className="w-20">
                             <ActionButtons item={item}/>
                         </td>
                     </tr>
@@ -258,10 +258,10 @@ export default function ManagePanel() {
             } else if (activeTab === "classroom") {
                 return (
                     <tr key={index} className="odd:bg-slate-200 even:bg-white">
-                        <td>{item.numeracao}</td>
+                        <td className="pl-3">{item.numeracao}</td>
                         <td>{item.especificacao}</td>
                         <td>{item.disponibilidade}</td>
-                        <td>
+                        <td className="w-20">
                             <ActionButtons item={item}/>
                         </td>
                     </tr>
@@ -269,10 +269,10 @@ export default function ManagePanel() {
             } else {
                 return (
                     <tr key={index} className="odd:bg-slate-200 even:bg-white">
-                        <td>{item.numeracao}</td>
+                        <td className="pl-3">{item.numeracao}</td>
                         <td>{item.nome}</td>
                         <td>{item.disponibilidade === "true" ? "Disponível" : "Indisponível"}</td>
-                        <td>
+                        <td className="w-20">
                             <ActionButtons item={item} />
                         </td>
                     </tr>
@@ -288,7 +288,7 @@ export default function ManagePanel() {
     };
 
     const ActionButtons = ({item}) => {
-        return (<>
+        return (<div className="flex gap-2">
             <Button variant="ghost" size="md" onClick={() => onEdit(item)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="blue" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z" />
@@ -304,16 +304,16 @@ export default function ManagePanel() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 8.25h.008v.008H12V8.25z" />
                 </svg>
             </Button>
-        </>);
+        </div>);
     };
 
     return (
         <div className="w-full text-black min-h-screen flex items-center justify-center">
-            <div className="md:w-full lg:w-1/2 h-full bg-white p-6 rounded-md shadow-md flex flex-col gap-3">
+            <div className="sm:w-full md:w-full lg:w-2/3 h-full bg-white p-6 rounded-md shadow-md flex flex-col gap-3">
                 <h1 className="text-xl font-semibold">Cadastro</h1>
                 <span className="border-b border-slate-300"></span>
                 <div className="flex">
-                    <ul className="flex gap-3">
+                    <ul className="flex flex-wrap gap-3">
                         <li className={`flex items-center justify-center cursor-pointer p-3 ${activeTab === "user" ? "outline outline-solid rounded outline-slate-300 font-semibold" : ""}`} onClick={() => setActiveTab("user")}>Usuário</li>
                         <li className={`flex items-center justify-center cursor-pointer p-3 ${activeTab === "classroom" ? "outline outline-solid rounded outline-slate-300 font-semibold" : ""}`} onClick={() => setActiveTab("classroom")}>Sala</li>
                         <li className={`flex items-center justify-center cursor-pointer p-3 ${activeTab === "material" ? "outline outline-solid rounded outline-slate-300 font-semibold" : ""}`} onClick={() => setActiveTab("material")}>Material</li>
@@ -322,14 +322,17 @@ export default function ManagePanel() {
                         setEditItem(null);
                         toggleOverlay(true);}}>Novo Cadastro</button>
                 </div>
-                <table>
-                    <thead>
-                        {tableHeadings()}
-                    </thead>
-                    <tbody>
-                        {tableElements()}
-                    </tbody>
-                </table>
+                <div className="overflow-x-auto w-full">
+                    <table className="table-auto w-full">
+                        <thead>
+                            {tableHeadings()}
+                        </thead>
+                        <tbody>
+                            {tableElements()}
+                        </tbody>
+                    </table>
+
+                </div>
             </div>
             {overlay()}
         </div>

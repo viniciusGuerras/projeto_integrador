@@ -3,6 +3,7 @@ import Button from "../ui/Button";
 import {useRef, useState } from "react";
 import AllocationOverlay from "./AllocationOverlay.jsx";
 import AllocationEditOverlay from "./AllocationEditOverlay.jsx"
+import PrgAulaOverlay from "./PrgAulaOverlay.jsx";
 
 export default function AllocationPanel({title}){
     const idCounter = useRef(1);
@@ -87,7 +88,7 @@ export default function AllocationPanel({title}){
 
                 <Button variant="terciary" size="md" onClick={() => toggleOverlay(true)}>Nova Reserva</Button>
 
-                <AllocationOverlay 
+                <PrgAulaOverlay 
                     tab={activeTab === "classrooms" ? "salas" : "materiais"}
                     options = {activeTab === "classrooms" ? classroomOptions : materialOptions}
                     open={overlayOpen}
@@ -106,8 +107,6 @@ export default function AllocationPanel({title}){
                     onSubmit={handleEditSubmit}
                     initialData={editTarget}
                 />
-
-
             </ul>
 
             <div className="w-full flex-1 rounded-lg"> 
