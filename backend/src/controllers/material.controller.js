@@ -66,10 +66,11 @@ exports.createMaterial = async (req, res) => {
 };
 
 exports.updateMaterial = async (req, res) => {
-    const numeracao = req.params.numeracao; 
+    const numeracao = req.params.materialId; 
 
     const { nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr, estado, datacpra, tipo } = req.body;
 
+     console.log(numeracao, nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr,estado, datacpra, tipo);
     if (!disponibilidade || quantidade === undefined || !nome || !dscr || !estado || !datacpra || !tipo ) {
         return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
     }
@@ -87,8 +88,8 @@ exports.updateMaterial = async (req, res) => {
 
     try {
         const materialData = {
-            nmrsala,
-            qtdmaterial, 
+            nmrsala : nmrsala !== '' ? nmrsala : null,
+            qtdmaterial: qtdmaterial !== 0 || '' ? qtdmaterial : null, 
             disponibilidade, 
             quantidade, 
             nome, 
@@ -98,7 +99,7 @@ exports.updateMaterial = async (req, res) => {
             tipo
         };
 
-        const updatedMaterial = await repository.updateMaterial(materialData);
+        const updatedMaterial = await repository.updateMaterial(numeracao, materialData);
         res.status(200).json({ message: "Material atualizado com sucesso", material: updatedMaterial });
     }
     catch (err){

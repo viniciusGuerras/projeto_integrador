@@ -44,7 +44,7 @@ exports.createMaterial = async (material) => {
     return result;
 };
 
-exports.updateMaterial = async (materialData) => {
+exports.updateMaterial = async (numeracao, materialData) => {
     const {
         nmrsala,
         qtdmaterial, 
@@ -71,6 +71,7 @@ exports.updateMaterial = async (materialData) => {
          WHERE numeracao = $1
          RETURNING *`,
         [
+            numeracao,
             nmrsala,
             qtdmaterial === '' ? null : qtdmaterial,
             disponibilidade,

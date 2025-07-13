@@ -6,5 +6,6 @@ const { authenticateJWT, authorizeRoles } = require("../middleware/authMiddlewar
 router.get("/",            authenticateJWT, authorizeRoles('admin'), controller.getMaterials       );
 router.post("/",           authenticateJWT, authorizeRoles('admin'), controller.createMaterial     );
 router.get("/:materialId", authenticateJWT, authorizeRoles('admin'), controller.getMaterialByNumber);
+router.patch("/:materialId", authenticateJWT, authorizeRoles('admin'), controller.updateMaterial);
 
 module.exports = router;

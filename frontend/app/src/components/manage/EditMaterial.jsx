@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }) {
+export default function EditMaterial({ isOpen, onClose, initial, onSubmit, onError }) {
     const [material, setMaterial] = useState({
         numeracao: '',
         nmrsala: '',
@@ -19,6 +19,12 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
 
     const disponibilidade = ['Disponível', 'Indisponível'];
 
+    function formatDateToInput(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toISOString().split('T')[0]; // "2025-07-07"
+    }
+
     useEffect(() => {
         if (isOpen) {
             setMensagem('');
@@ -35,11 +41,11 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
                     nome: initial.nome || '',
                     dscr: initial.dscr || '',
                     estado: initial.estado || '',
-                    datacpra: initial.datacpra || '',
+                    datacpra: formatDateToInput(initial.datacpra) || '',    
                     tipo: initial.tipo || ''
                 });
             } else {
-                setRoom({
+                setMaterial({
                     numeracao: '',
                     nmrsala: '',
                     qtdmaterial: '',
@@ -73,28 +79,25 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
         setServerError('');
     };
 
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const requiredFields = [material.numeracao, material.disponibilidade, material.qtdmaterial, 
-            material.nome, material.dscr, material.estado, material.datacpra, material.tipo];
+        const requiredFields = [material.numeracao, material.disponibilidade, material.quantidade,
+        material.nome, material.dscr, material.estado, material.datacpra, material.tipo];
         if (requiredFields.some(val => val === undefined || val === '')) {
             setMensagem('Por favor, preencha todos os campos obrigatórios.');
             return;
         }
 
-        const numeracao = room.numeracao;
+        const numeracao = material.numeracao;
 
         if (parseInt(material.quantidade) <= 0) {
             setMensagem('A quantidade de materiais precisa ser maior que zero.');
             return;
         }
-
-        if (parseInt(material.qtdmaterial) <= 0) {
-            setMensagem('A quantidade de materiais em uma sala precisa ser maior que zero.');
-            return;
-        }
-
+        
         const payload = {
             ...material,
             disponibilidade: material.disponibilidade.toLowerCase(),
@@ -109,14 +112,14 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
 
     return (
         <div
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto"
             onClick={onClose}
         >
             <div
                 className="max-w-md mx-auto mt-10 p-6 border rounded shadow bg-white"
                 onClick={(e) => e.stopPropagation()}
             >
-                <h2 className="text-xl font-bold mb-4">Atualização de Sala</h2>
+                <h2 className="text-xl font-bold mb-4">Atualização de Material</h2>
                 {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
                 {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -140,7 +143,7 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
 
                     <input
                         type="text"
-                        name="descricao"
+                        name="dscr"
                         placeholder="Descrição do material *"
                         value={material.dscr}
                         onChange={handleChange}
@@ -161,15 +164,6 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
                         name="estado"
                         placeholder="Estado do material *"
                         value={material.estado}
-                        onChange={handleChange}
-                        className="border p-2 rounded bg-white"
-                    />
-
-                    <input
-                        type="text"
-                        name="numeracao"
-                        placeholder="Numeração do material *"
-                        value={material.numeracao}
                         onChange={handleChange}
                         className="border p-2 rounded bg-white"
                     />
@@ -198,7 +192,7 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
                     />
 
                     <input type="date"
-                        name="dataCompra"
+                        name="datacpra"
                         placeholder="Data de Compra (DD/MM/AAAA)"
                         value={material.datacpra}
                         onChange={handleChange}
@@ -207,7 +201,7 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
 
                     <input
                         type="text"
-                        name="Sala associada"
+                        name="nmrsala"
                         placeholder="Sala associada ao material"
                         value={material.nmrsala}
                         onChange={handleChange}
@@ -216,15 +210,15 @@ export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }
 
                     <input
                         type="number"
-                        name="quantide material na sala"
+                        name="qtdmaterial"
                         placeholder="Quantidade de materiais na sala "
                         value={material.qtdmaterial}
                         onChange={handleChange}
                         className="border p-2 rounded bg-white"
                     />
 
-                    <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-                        Cadastrar
+                    <button type="submit" className="bg-green-600 text-white py-2 px-4 rounded">
+                        Salvar
                     </button>
                 </form>
             </div>

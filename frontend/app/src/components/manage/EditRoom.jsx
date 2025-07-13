@@ -75,7 +75,7 @@ export default function AddRoom({ isOpen, onClose, initial, onSubmit, onError })
       ...room,
       disponibilidade: room.disponibilidade.toLowerCase(),
     };
-    delete payload.numeracao;  
+    delete payload.numeracao;
 
     onSubmit(numeracao, payload);
 
@@ -137,8 +137,8 @@ export default function AddRoom({ isOpen, onClose, initial, onSubmit, onError })
             className="border p-2 rounded bg-white"
           />
 
-          <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-            Cadastrar
+          <button type="submit" className="bg-green-600 text-white py-2 px-4 rounded">
+            Salvar
           </button>
         </form>
       </div>

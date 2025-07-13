@@ -6,6 +6,9 @@ import Button from "../ui/Button.jsx";
 import EditUser from "./EditUser.jsx";
 import EditRoom from "./EditRoom.jsx";
 import EditMaterial from "./EditMaterial.jsx";
+import InfoMaterial from "./InfoMaterial.jsx";
+import InfoRoom from "./InfoRoom.jsx";
+import InfoUser from "./InfoUser.jsx";
 
 export default function ManagePanel() {
     const [activeTab, setActiveTab] = useState("user");
@@ -13,6 +16,8 @@ export default function ManagePanel() {
     const [submitError, setSubmitError] = useState(null);
 
     const [editItem, setEditItem] = useState(null);
+
+    const [infoItem, setInfoItem] = useState(null);
 
     const [list, addToList] = useState({
         user: [],
@@ -39,7 +44,7 @@ export default function ManagePanel() {
 
             const data = await res.json();
 
-            const key = activeTab === "user" ? "users" : activeTab + "s"; 
+            const key = activeTab === "user" ? "users" : activeTab + "s";
 
             addToList(prev => ({
                 ...prev,
@@ -59,6 +64,11 @@ export default function ManagePanel() {
         toggleOverlay(true);
     }
 
+    const onInfo = (item) => {
+        setInfoItem(item);
+    };
+
+
     const handleSubmit = async (registerData) => {
         let url = "";
         if (activeTab === "user") url = "http://localhost:3000/users";
@@ -68,20 +78,20 @@ export default function ManagePanel() {
         console.log("trying to hit:", url)
         console.log(registerData);
 
-        try{
+        try {
             const res = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type" : "application/json",
-                    Authorization : `Bearer ${token}`
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify(registerData)
             })
 
-            if(!res.ok){
+            if (!res.ok) {
                 const errorData = await res.json().catch(() => null);
                 const errorMessage = errorData?.error || `Erro ao cadastrar ${activeTab}`;
-                setSubmitError(errorMessage); 
+                setSubmitError(errorMessage);
                 throw new Error(errorMessage);
             }
 
@@ -95,7 +105,7 @@ export default function ManagePanel() {
             setSubmitError(null);
             await fetchData();
         }
-        catch(error){
+        catch (error) {
             console.error('Erro ao cadastrar usuário:', error);
         }
     };
@@ -112,12 +122,12 @@ export default function ManagePanel() {
 
         console.log("tentando modificação:", updatedData);
 
-        try{
+        try {
             const res = await fetch(url, {
                 method: "PATCH",
                 headers: {
-                    "Content-Type" : "application/json",
-                    Authorization : `Bearer ${token}`
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
                 },
                 body: JSON.stringify(updatedData)
             })
@@ -137,7 +147,7 @@ export default function ManagePanel() {
             toggleOverlay(false);
             setSubmitError(null);
         }
-        catch(error){
+        catch (error) {
             console.error("Erro ao remover item:", error);
         }
     };
@@ -151,12 +161,12 @@ export default function ManagePanel() {
         const fullUrl = `${url}/${identifier}`;
         console.log(fullUrl);
 
-        try{
+        try {
             const res = await fetch(fullUrl, {
                 method: "DELETE",
                 headers: {
-                    "Content-Type" : "application/json",
-                    Authorization : `Bearer ${token}`
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
                 },
             })
 
@@ -172,31 +182,24 @@ export default function ManagePanel() {
                 })
             }));
         }
-        catch(error){
+        catch (error) {
             console.error("Erro ao remover item:", err);
         }
 
     };
 
-    const onInfo = () => {
-        let url = "";
-        if (activeTab === "user") url = "http://localhost:3000/users";
-        else if (activeTab === "classroom") url = "http://localhost:3000/classrooms";
-        else if (activeTab === "material") url = "http://localhost:3000/materials";
-    };
-
     const overlay = () => {
         if (editItem) {
-             const commonEditProps = {
+            const commonEditProps = {
                 isOpen: isOverlayOpen,
                 onClose: () => toggleOverlay(false),
                 onSubmit: handleEditSubmit,
                 onError: submitError,
                 initial: editItem
             };
-            if (activeTab === "user") return <EditUser {...commonEditProps}/>
-            if (activeTab === "classroom") return <EditRoom {...commonEditProps}/>;
-            return <EditMaterial {...commonEditProps}/>;
+            if (activeTab === "user") return <EditUser {...commonEditProps} />
+            if (activeTab === "classroom") return <EditRoom {...commonEditProps} />;
+            return <EditMaterial {...commonEditProps} />;
         }
 
         const commonProps = {
@@ -251,7 +254,7 @@ export default function ManagePanel() {
                         <td>{item.nome}</td>
                         <td>{item.tipo}</td>
                         <td>
-                            <ActionButtons item={item}/>
+                            <ActionButtons item={item} />
                         </td>
                     </tr>
                 );
@@ -262,7 +265,7 @@ export default function ManagePanel() {
                         <td>{item.especificacao}</td>
                         <td>{item.disponibilidade}</td>
                         <td>
-                            <ActionButtons item={item}/>
+                            <ActionButtons item={item} />
                         </td>
                     </tr>
                 );
@@ -284,10 +287,10 @@ export default function ManagePanel() {
     const getId = (item) => {
         if (activeTab === "user") return item.matricula;
         if (activeTab === "classroom") return item.numeracao;
-        if (activeTab === "material") return item.numeracao; 
+        if (activeTab === "material") return item.numeracao;
     };
 
-    const ActionButtons = ({item}) => {
+    const ActionButtons = ({ item }) => {
         return (<>
             <Button variant="ghost" size="md" onClick={() => onEdit(item)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="blue" className="size-6">
@@ -299,7 +302,7 @@ export default function ManagePanel() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </Button>
-            <Button variant="ghost" size="md" onClick={onInfo}>
+            <Button variant="ghost" size="md" onClick={() => onInfo(item)}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zM12 8.25h.008v.008H12V8.25z" />
                 </svg>
@@ -320,7 +323,8 @@ export default function ManagePanel() {
                     </ul>
                     <button className="ml-auto bg-slate-900 text-white px-4 py-2 rounded" type="button" onClick={() => {
                         setEditItem(null);
-                        toggleOverlay(true);}}>Novo Cadastro</button>
+                        toggleOverlay(true);
+                    }}>Novo Cadastro</button>
                 </div>
                 <table>
                     <thead>
@@ -332,7 +336,32 @@ export default function ManagePanel() {
                 </table>
             </div>
             {overlay()}
+
+            {infoItem && activeTab === "material" && (
+                <InfoMaterial
+                    isOpen={true}
+                    onClose={() => setInfoItem(null)}
+                    material={infoItem}
+                />
+            )}
+
+            {infoItem && activeTab === "classroom" && (
+                <InfoRoom
+                    isOpen={true}
+                    onClose={() => setInfoItem(null)}
+                    room={infoItem}
+                />
+            )}
+
+            {infoItem && activeTab === "user" && (
+                <InfoUser
+                    isOpen={true}
+                    onClose={() => setInfoItem(null)}
+                    user={infoItem}
+                />
+            )}
+
         </div>
-        
+
     );
 }
