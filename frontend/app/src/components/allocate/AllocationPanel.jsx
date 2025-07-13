@@ -1,25 +1,71 @@
-import AllocationCard from "./AllocationCard.jsx"; 
+import AllocationCard from "./AllocationCard.jsx";
 import Button from "../ui/Button";
-import {useRef, useState } from "react";
+import { useRef, useState } from "react";
 import AllocationOverlay from "./AllocationOverlay.jsx";
 import AllocationEditOverlay from "./AllocationEditOverlay.jsx"
+import PrgAulaOverlay from "./PrgAulaOverlay.jsx";
+import MaterialOverlay from "./MaterialOverlay.jsx";
+import { useEffect } from "react";
 
-export default function AllocationPanel({title}){
+export default function AllocationPanel({ title }) {
     const idCounter = useRef(1);
 
     const [activeTab, setActiveState] = useState("classrooms");
     const [overlayOpen, toggleOverlay] = useState(false);
 
     const [edittOverlayOpen, toggleEditOverlay] = useState(false);
-    const [editTarget, setEditTarget] = useState(null); 
+    const [editTarget, setEditTarget] = useState(null);
 
-    const classroomOptions = [{label:"sala", value:"sala"}];
-    const materialOptions = [{label:"material",value:"material"}];
+    const classroomOptions = [{ label: "sala", value: "sala" }];
+    const materialOptions = [{ label: "material", value: "material" }];
 
     const [allocations, setAllocations] = useState({
-        classrooms:[],
-        materials:[],
+        classrooms: [],
+        materials: [],
     });
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const classResponse = await fetch("http://localhost:3000/reservation/classroom", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+
+                const classData = await classResponse.json();
+
+                const materialResponse = await fetch("http://localhost:3000/reservation/material", {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+
+                const materialData = await materialResponse.json();
+
+                console.log(classData, "and", materialData);
+
+                const formatAllocation = (item) => ({
+                    key: idCounter.current++,
+                    identifier: item.userm,
+                    day: item.dthoradevolus,
+                });
+
+                const classrooms = classData.classreservations.map(formatAllocation);
+                const materials = materialData.materialreservations.map(formatAllocation);
+
+                setAllocations({
+                    classrooms,
+                    materials
+                });
+            } catch (error) {
+                console.error("Erro ao carregar reservas:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleEdit = (key) => {
         const toEdit = allocations[activeTab].find(i => i.key == key);
@@ -30,7 +76,7 @@ export default function AllocationPanel({title}){
     const handleEditSubmit = (updateData) => {
         setAllocations(prev => ({
             ...prev,
-            [activeTab] : prev[activeTab].map(item => item.key == editTarget.key ? {...item, ...updateData} : item)
+            [activeTab]: prev[activeTab].map(item => item.key == editTarget.key ? { ...item, ...updateData } : item)
         }));
         toggleEditOverlay(false);
         setEditTarget(null);
@@ -38,25 +84,58 @@ export default function AllocationPanel({title}){
 
     const handleRemove = key => {
         setAllocations(prev => (
-            {...prev, 
-            [activeTab]: [...prev[activeTab].filter(i => i.key != key)]
+            {
+                ...prev,
+                [activeTab]: [...prev[activeTab].filter(i => i.key != key)]
             }
         ))
 
     };
 
-    const handleAllocations = (reservationData) => {
+    const handleAllocations = async (reservationData) => {
         const newAllocation = {
             key: idCounter.current++,
-            identifier: reservationData.identifier,
-            day: reservationData.day,
-        }; 
+            identifier: reservationData.userm,
+            day: reservationData.dthoradevolus,
+        };
 
         setAllocations(prev => ({
             ...prev,
             [activeTab]: [...prev[activeTab], newAllocation],
         }));
 
+        if (activeTab === "classroom") {
+            try {
+                await fetch('http://localhost:3000/reservation/classroom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    body: JSON.stringify(reservationData),
+                });
+                console.log(reservationData)
+            } catch (error) {
+                console.error('Erro ao salvar alocação:', error);
+            }
+        }
+        else {
+            try {
+                await fetch('http://localhost:3000/reservation/material', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    body: JSON.stringify(reservationData),
+                });
+                console.log(reservationData)
+            } catch (error) {
+                console.error('Erro ao salvar alocação:', error);
+            }
+        }
+
+        console.log('Alocação salva com sucesso de:', reservationData);
         toggleOverlay(false)
     };
 
@@ -68,18 +147,16 @@ export default function AllocationPanel({title}){
             <span className="w-full border-b border-slate-300"></span>
             <ul className="w-full h-auto gap-3 flex text-slate-800 items-center justify-start">
                 <li
-                className={`cursor-pointer px-3 py-1 rounded ${
-                activeTab === "classrooms" ? "outline outline-solid outline-slate-300 font-semibold" : ""
-                }`}
-                onClick={() => setActiveState("classrooms")}
+                    className={`cursor-pointer px-3 py-1 rounded ${activeTab === "classrooms" ? "outline outline-solid outline-slate-300 font-semibold" : ""
+                        }`}
+                    onClick={() => setActiveState("classrooms")}
                 >salas
                 </li>
 
                 <li
-                className={`cursor-pointer px-3 py-1 rounded ${
-                activeTab === "materials" ? "outline outline-solid outline-slate-300 font-semibold" : ""
-                }`}
-                onClick={() => setActiveState("materials")}
+                    className={`cursor-pointer px-3 py-1 rounded ${activeTab === "materials" ? "outline outline-solid outline-slate-300 font-semibold" : ""
+                        }`}
+                    onClick={() => setActiveState("materials")}
                 >materiais
                 </li>
 
@@ -87,15 +164,24 @@ export default function AllocationPanel({title}){
 
                 <Button variant="terciary" size="md" onClick={() => toggleOverlay(true)}>Nova Reserva</Button>
 
-                <AllocationOverlay 
-                    tab={activeTab === "classrooms" ? "salas" : "materiais"}
-                    options = {activeTab === "classrooms" ? classroomOptions : materialOptions}
-                    open={overlayOpen}
-                    onClose={() => toggleOverlay(false)}
-                    onSubmit={handleAllocations}
-                />
+                {activeTab === "classrooms" ? (
+                    <PrgAulaOverlay
+                        tab="salas"
+                        open={overlayOpen}
+                        onClose={() => toggleOverlay(false)}
+                        onSubmit={handleAllocations}
+                    />
+                ) : (
+                    <MaterialOverlay
+                        tab="materiais"
+                        open={overlayOpen}
+                        onClose={() => toggleOverlay(false)}
+                        onSubmit={handleAllocations}
+                    />
+                )}
 
-                <AllocationEditOverlay 
+
+                <AllocationEditOverlay
                     tab={activeTab === "classrooms" ? "salas" : "materiais"}
                     options={activeTab === "classrooms" ? classroomOptions : materialOptions}
                     open={edittOverlayOpen}
@@ -106,21 +192,19 @@ export default function AllocationPanel({title}){
                     onSubmit={handleEditSubmit}
                     initialData={editTarget}
                 />
-
-
             </ul>
 
-            <div className="w-full flex-1 rounded-lg"> 
+            <div className="w-full flex-1 rounded-lg">
                 {list.map(
                     item => (
-                        <AllocationCard 
+                        <AllocationCard
                             key={item.key}
                             identifier={item.identifier}
                             day={item.day}
                             onEdit={() => handleEdit(item.key)}
                             onRemove={() => handleRemove(item.key)}
                         />
-                ))}
+                    ))}
             </div>
         </div>
     );

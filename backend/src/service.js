@@ -1,3 +1,4 @@
+const reservationRoutes = require("./routes/reservation.routes.js");
 const materialRoutes = require("./routes/material.routes.js");
 const classroomRoutes = require("./routes/room.routes.js");
 const userRoutes = require("./routes/user.routes.js");
@@ -13,6 +14,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/materials", materialRoutes);
 app.use("/classrooms", classroomRoutes);
+app.use("/reservation", reservationRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
