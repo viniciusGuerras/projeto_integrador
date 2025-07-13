@@ -262,7 +262,7 @@ export default function ManagePanel() {
                 return (
                     <tr key={index} className="odd:bg-slate-200 even:bg-white">
                         <td className="pl-3">{item.numeracao}</td>
-                        <td>{item.especificacao}</td>
+                        <td>{item.especializacao}</td>
                         <td>{item.disponibilidade}</td>
                         <td className="w-20">
                             <ActionButtons item={item}/>

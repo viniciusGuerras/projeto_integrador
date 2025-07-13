@@ -31,10 +31,10 @@ exports.getRooms = (req, res) => {
 };
 
 exports.createRoom = async (req, res) => {
-    const { numeracao, especificacao, disponibilidade, qtdcadeira } = req.body;
+    const { numeracao, especializacao, disponibilidade, qtdcadeira } = req.body;
     console.log("req.body:", req.body);
 
-    if (!numeracao || !especificacao || !disponibilidade || !qtdcadeira) {
+    if (!numeracao || !especializacao || !disponibilidade || !qtdcadeira) {
         return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
     }
 
@@ -50,7 +50,7 @@ exports.createRoom = async (req, res) => {
     try {
         const roomData = {
             numeracao,
-            especificacao, 
+            especializacao, 
             disponibilidade, 
             qtdcadeira
         };
@@ -72,9 +72,9 @@ exports.createRoom = async (req, res) => {
 exports.updateRoom = async (req, res) => {
     const numeracao = req.params.numeracao; 
 
-    const { especificacao, disponibilidade, qtdcadeira } = req.body;
+    const { especializacao, disponibilidade, qtdcadeira } = req.body;
 
-    if (!especificacao || !disponibilidade || qtdcadeira === undefined) {
+    if (!especializacao || !disponibilidade || qtdcadeira === undefined) {
         return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
     }
 
@@ -92,7 +92,7 @@ exports.updateRoom = async (req, res) => {
     try {
         const roomData = {
             numeracao,
-            especificacao,
+            especializacao,
             disponibilidade,
             qtdcadeira
         };

@@ -29,7 +29,7 @@ export default function InfoRoom({isOpen, onClose, room}) {
                 <h2 className="text-lg font-semibold mb-4">Informações da Sala</h2>
                 <ul className="space-y-2">
                     <li><strong>Numeração:</strong> {room.numeracao}</li>
-                    <li><strong>Especificação:</strong> {room.especificacao}</li>
+                    <li><strong>Especificação:</strong> {room.especializacao}</li>
                     <li><strong>Disponibilidade:</strong> {room.disponibilidade}</li>
                     <li><strong>Qtd Cadeiras:</strong> {room.qtdcadeira}</li>
                 </ul>

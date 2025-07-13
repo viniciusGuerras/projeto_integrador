@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
   const [room, setRoom] = useState({
     numeracao: '',
-    especificacao: '',
+    especializacao: '',
     disponibilidade: '',
     qtdcadeira: '',
   });
@@ -36,7 +36,7 @@ export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const requiredFields = [room.numeracao, room.disponibilidade, room.qtdcadeira, room.especificacao];
+    const requiredFields = [room.numeracao, room.disponibilidade, room.qtdcadeira, room.especializacao];
     if (requiredFields.some(val => val === undefined || val === '')) {
       setMensagem('Por favor, preencha todos os campos obrigatórios.');
       return;
@@ -56,7 +56,7 @@ export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
 
     setRoom({
       numeracao: '',
-      especificacao: '',
+      especializacao: '',
       disponibilidade: '',
       qtdcadeira: '',
     });
@@ -88,9 +88,9 @@ export default function AddRoom({ isOpen, onClose, onSubmit, onError }) {
 
           <input
             type="text"
-            name="especificacao"
+            name="especializacao"
             placeholder="Especificação da sala *"
-            value={room.especificacao}
+            value={room.especializacao}
             onChange={handleChange}
             className="border p-2 rounded bg-white"
           />

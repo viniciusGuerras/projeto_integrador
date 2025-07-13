@@ -13,7 +13,7 @@ CREATE TABLE "user" (
 
 CREATE TABLE sala (
     numeracao INT NOT NULL,
-    especificacao VARCHAR NOT NULL,
+    especializacao VARCHAR NOT NULL,
     disponibilidade VARCHAR NOT NULL,
     qtdcadeira INT NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT true,
