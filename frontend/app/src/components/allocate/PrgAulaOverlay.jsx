@@ -30,13 +30,18 @@ export default function PrgAulaOverlay({ open, tab, options, onClose, onSubmit }
             });
     }, []);
 
+    const registration = localStorage.getItem("identifier");
+
     const handleSubmit = () => {
+
+        setUserm(registration);
+        
         if (!userm || !hraula || !turma || !disciplina || !qtdaula) {
             return;
         }
 
         onSubmit({
-            userm,
+            userm : registration,
             hraula: parseInt(hraula),
             nmrsala: nmrsala ? parseInt(nmrsala) : null,
             dthoradevolus: dthoradevolus || null,
@@ -62,18 +67,9 @@ export default function PrgAulaOverlay({ open, tab, options, onClose, onSubmit }
             <div className="flex flex-col gap-3 bg-slate-50 rounded-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
                 <h2 className="text-xl font-semibold mb-2">{tab}</h2>
 
-                <label className="text-sm font-medium">User (userm)</label>
-                <input
-                    type="text"
-                    value={userm}
-                    onChange={(e) => setUserm(e.target.value)}
-                    className="w-full bg-slate-200 px-3 py-1.5 rounded"
-                    required
-                />
-
                 <label className="text-sm font-medium">Hora da Aula (hraula)</label>
                 <input
-                    type="number"
+                    type="time"
                     value={hraula}
                     onChange={(e) => setHraula(e.target.value)}
                     className="w-full bg-slate-200 px-3 py-1.5 rounded"
@@ -141,7 +137,7 @@ export default function PrgAulaOverlay({ open, tab, options, onClose, onSubmit }
                         variant="terciary"
                         size="md"
                         onClick={handleSubmit}
-                        disabled={!userm || !hraula || !turma || !disciplina || !qtdaula}
+                        disabled={!hraula || !turma || !disciplina || !qtdaula}
                     >
                         Reservar
                     </Button>
