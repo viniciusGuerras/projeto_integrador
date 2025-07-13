@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const controllerClassroom = require("../controllers/reservationClassroom.controller.js");
 const controllerMaterial = require("../controllers/reservationMaterial.controller.js");
+const controller = require("../controllers/reservation.controller.js");
 const { authenticateJWT, authorizeRoles } = require("../middleware/authMiddleware.js");
 
 // (/reservation/classroom e etc) fazer reserva das salas
@@ -18,5 +19,6 @@ router.get("/material/:matricula",     authenticateJWT, authorizeRoles('admin'),
 router.patch("/material/:matricula" ,  authenticateJWT, authorizeRoles('admin'), controllerMaterial.updateMaterialReservation);
 router.delete("/material/:numeracao" , authenticateJWT, authorizeRoles('admin'), controllerMaterial.removeMaterialReservation);
 
+router.get("/", authenticateJWT, authorizeRoles('admin'), controller.getAllFiltered);
 
 module.exports = router;

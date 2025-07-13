@@ -1,4 +1,4 @@
-CREATE TABLE "user" (
+CREATE TABLE users (
     matricula VARCHAR NOT NULL,
     senha VARCHAR NOT NULL, 
     cpf VARCHAR NOT NULL,
@@ -62,7 +62,7 @@ ALTER TABLE material
 
 ALTER TABLE prg_aula 
     ADD CONSTRAINT fk_prg_aula_userm 
-    FOREIGN KEY (userm) REFERENCES "user" (matricula);
+    FOREIGN KEY (userm) REFERENCES users (matricula);
 
 ALTER TABLE prg_aula 
     ADD CONSTRAINT fk_prg_aula_nmrsala 
