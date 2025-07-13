@@ -119,7 +119,7 @@ exports.removeRoom = async (req, res) => {
             res.status(404).json({ error: "Sala não encontrada" });
         }
         else {
-            res.status(200).json({ message: "Sala desativada com sucesso", user : removedRoom });
+            res.status(200).json({ message: "Sala desativada com sucesso", room : removedRoom });
         }
     })
 }

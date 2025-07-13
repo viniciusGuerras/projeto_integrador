@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 
 export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
-    const [material, setMaterial] = useState({
+  const [material, setMaterial] = useState({
     numeracao: '',
+    nmrsala: '',
     nome: '',
-    descricao: '',
+    dscr: '',
     tipo: '',
     qtdmaterial: '',
     quantidade: '',
     estado: '',
-    dataCompra: '',
+    datacpra: '',
     disponibilidade: '',
-    });
-
+  });
 
   const [mensagem, setMensagem] = useState('');
   const [serverError, setServerError] = useState('');
@@ -43,7 +43,7 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const required = ['nome', 'descricao', 'tipo', 'quantidade', 'estado', 'dataCompra', 'disponibilidade'];
+    const required = ['nome', 'dscr', 'tipo', 'quantidade', 'estado', 'datacpra', 'disponibilidade'];
     const hasEmpty = required.some((key) => !material[key]);
 
     if (hasEmpty) {
@@ -66,14 +66,14 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
 
     setMaterial({
       numeracao: '',
-      nmrsala: " ",
-      qntsala: " ",
+      nmrsala: '',
       nome: '',
-      descricao: '',
+      dscr: '',
       tipo: '',
+      qtdmaterial: '',
       quantidade: '',
       estado: '',
-      dataCompra: '',
+      datacpra: '',
       disponibilidade: '',
     });
   };
@@ -92,6 +92,7 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
         <h2 className="text-xl font-bold mb-4">Cadastro de Material</h2>
         {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
         {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="text"
@@ -113,9 +114,9 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
 
           <input
             type="text"
-            name="descricao"
+            name="dscr"
             placeholder="Descrição do material *"
-            value={material.descricao}
+            value={material.dscr}
             onChange={handleChange}
             className="border p-2 rounded bg-white"
           />
@@ -125,6 +126,15 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
             name="tipo"
             placeholder="Tipo do material *"
             value={material.tipo}
+            onChange={handleChange}
+            className="border p-2 rounded bg-white"
+          />
+
+          <input
+            type="text"
+            name="nmrsala"
+            placeholder="Sala (opcional)"
+            value={material.nmrsala}
             onChange={handleChange}
             className="border p-2 rounded bg-white"
           />
@@ -152,9 +162,9 @@ export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
 
           <input
             type="date"
-            name="dataCompra"
-            placeholder="Data de compra"
-            value={material.dataCompra}
+            name="datacpra"
+            placeholder="Data de compra *"
+            value={material.datacpra}
             onChange={handleChange}
             className="border p-2 rounded bg-white"
           />

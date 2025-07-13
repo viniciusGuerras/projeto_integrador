@@ -66,6 +66,7 @@ export default function ManagePanel() {
         else if (activeTab === "material") url = "http://localhost:3000/materials";
 
         console.log("trying to hit:", url)
+        console.log(registerData);
 
         try{
             const res = await fetch(url, {

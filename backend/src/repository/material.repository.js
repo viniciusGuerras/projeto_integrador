@@ -30,7 +30,7 @@ exports.createMaterial = async (material) => {
         [
             numeracao,
             nmrsala,
-            qtdmaterial, 
+            qtdmaterial === '' ? null : qtdmaterial,
             disponibilidade, 
             quantidade, 
             nome, 
@@ -43,3 +43,60 @@ exports.createMaterial = async (material) => {
 
     return result;
 };
+
+exports.updateMaterial = async (materialData) => {
+    const {
+        nmrsala,
+        qtdmaterial, 
+        disponibilidade, 
+        quantidade, 
+        nome, 
+        dscr, 
+        estado, 
+        datacpra, 
+        tipo
+    } = materialData;
+
+    const result = await db.query(
+        `UPDATE material
+         SET nmrsala = $2,
+            qtdmaterial = $3,
+            disponibilidade = $4,
+            quantidade = $5,
+            nome = $6,
+            dscr = $7,
+            estado = $8,
+            datacpra = $9,
+            tipo = $10
+         WHERE numeracao = $1
+         RETURNING *`,
+        [
+            nmrsala,
+            qtdmaterial === '' ? null : qtdmaterial,
+            disponibilidade,
+            quantidade,
+            nome,
+            dscr,
+            estado,
+            new Date(datacpra),
+            tipo
+        ]
+    );
+
+    return result; 
+};
+
+exports.removeMaterial = async (numeracao) => {
+    const result = await db.query(
+    `UPDATE material
+        SET 
+            ativo = $2
+        WHERE numeracao = $1
+        RETURNING numeracao`,
+    [
+        numeracao,
+        false
+    ]);
+
+    return result;
+}
