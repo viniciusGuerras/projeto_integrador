@@ -3,29 +3,46 @@ import { useEffect, useState } from "react";
 export default function Report() {
     const [activeTab, setActiveTab] = useState("classrooms");
     const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(true);
+
+    const [sortBy, setSortBy] = useState("nome");
+    const [sortOrder, setSortOrder] = useState("ASC");
+    const [ativo, setAtivo] = useState(true);
 
     const fetchData = async () => {
-        setLoading(true);
-        const type = activeTab === "classrooms" ? "sala" : "material";
+        let type;
+        if (activeTab === "classrooms") {
+            type = "sala";
+        }
+        else if (activeTab === "materials") {
+            type = "material";
+        }
+        else {
+            type = "all";
+        }
+
+        const token = localStorage.getItem("token");
 
         try {
-            const res = await fetch(`h?type=${type}`);
+            const res = await fetch(`http://localhost:3000/reservation?type=${type}&sortBy=${sortBy}&sortOrder=${sortOrder}&ativo=${ativo}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
             const json = await res.json();
-            setData(json.rows || []);
+            console.log(json);
+            setData(json.reservations || []);
         } catch (err) {
             console.error("Erro ao buscar dados:", err);
-        } finally {
-            setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchData();
-    }, [activeTab]);
+    }, [activeTab, sortBy, sortOrder, ativo]);
 
     const headers = [
-        "tipo", "nome", "matricula", "item", "horario", 
+        "tipo", "nome", "matricula", "item", "horario",
         "turma", "disciplina", "qtdaula", "data_devolucao"
     ];
 
@@ -36,57 +53,90 @@ export default function Report() {
 
                 <ul className="flex gap-4">
                     <li
-                        className={`cursor-pointer px-4 py-2 rounded ${
-                            activeTab === "classrooms" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
-                        }`}
+                        className={`cursor-pointer px-4 py-2 rounded ${activeTab === "all" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
+                            }`}
+                        onClick={() => setActiveTab("all")}
+                    >
+                        Todos
+                    </li>
+                    <li
+                        className={`cursor-pointer px-4 py-2 rounded ${activeTab === "classrooms" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
+                            }`}
                         onClick={() => setActiveTab("classrooms")}
                     >
                         Salas
                     </li>
                     <li
-                        className={`cursor-pointer px-4 py-2 rounded ${
-                            activeTab === "materials" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
-                        }`}
+                        className={`cursor-pointer px-4 py-2 rounded ${activeTab === "materials" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
+                            }`}
                         onClick={() => setActiveTab("materials")}
                     >
                         Materiais
                     </li>
+
                 </ul>
 
-                <div className="overflow-x-auto">
-                    {loading ? (
-                        <p>Carregando...</p>
-                    ) : (
-                        <table className="min-w-full border text-sm text-left">
-                            <thead className="bg-slate-100 text-slate-700 font-semibold">
-                                <tr>
-                                    {headers.map((head) => (
-                                        <th key={head} className="px-4 py-2 border">{head}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.map((row, idx) => (
-                                    <tr key={idx} className="hover:bg-slate-50">
-                                        {headers.map((key) => (
-                                            <td key={key} className="px-4 py-2 border">
-                                                {row[key] ?? "-"}
-                                            </td>
-                                        ))}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
+
+                <div className="flex flex-wrap items-center gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700">Ordenar por</label>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="border px-3 py-1 rounded bg-white"
+                        >
+                            <option value="nome">Nome</option>
+                            <option value="matricula">Matrícula</option>
+                            <option value="data">horário</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700">Ordem</label>
+                        <select
+                            value={sortOrder}
+                            onChange={(e) => setSortOrder(e.target.value)}
+                            className="border px-3 py-1 rounded bg-white"
+                        >
+                            <option value="ASC">Ascendente</option>
+                            <option value="DESC">Descendente</option>
+                        </select>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-6">
+                        <input
+                            id="ativo"
+                            type="checkbox"
+                            checked={ativo}
+                            onChange={() => setAtivo((prev) => !prev)}
+                        />
+                        <label htmlFor="ativo" className="text-sm">Ativo</label>
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-3 mt-4">
-                    <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12v6m0 0l-3-3m3 3l3-3M12 3v9" />
-                        </svg>
-                        Download
-                    </button>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border text-sm text-left">
+                        <thead className="bg-slate-100 text-slate-700 font-semibold">
+                            <tr>
+                                {headers.map((head) => (
+                                    <th key={head} className="px-4 py-2 border">{head}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((row, idx) => (
+                                <tr key={idx} className="hover:bg-slate-50">
+                                    {headers.map((key) => (
+                                        <td key={key} className="px-4 py-2 border">
+                                            {key === "data_devolucao" && row[key]
+                                                ? new Date(row[key]).toLocaleString()
+                                                : row[key] ?? "-"}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

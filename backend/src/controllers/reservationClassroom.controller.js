@@ -124,3 +124,19 @@ exports.removeClassroomReservation = async (req, res) => {
         }
     })
 }
+
+
+exports.getQtdAulaFromReservation = async (req, res) => {
+    const matricula = req.params.matricula; 
+    const hora = req.params.hora;
+
+    repository.getQtdAula(matricula, hora)
+    .then((qtdAula) => {
+        if(qtdAula){
+            res.status(200).json({ message: "Quantidade de aula encontrada", quantidade : qtdAula});
+        }
+        else{
+            res.status(404).json({ error: "Quantidade de aula não encontrada" });
+        }
+    })
+}

@@ -37,7 +37,7 @@ CREATE TABLE material (
 
 CREATE TABLE prg_aula (
     userm VARCHAR NOT NULL,
-    hraula TIME NOT NULL,
+    hraula DATE NOT NULL,
     nmrsala INT NULL,
     dthoradevolus DATE NULL,
     turma VARCHAR NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE prg_aula (
 
 CREATE TABLE rsr_material (
     userm VARCHAR NOT NULL,
-    hraula TIME NOT NULL,         
+    hraula DATE NOT NULL,         
     nmrm INT NOT NULL,
     dtddevolum DATE NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT true,

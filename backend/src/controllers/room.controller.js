@@ -123,3 +123,18 @@ exports.removeRoom = async (req, res) => {
         }
     })
 }
+
+exports.changeStatus = async (req, res) => {
+
+    const numeracao = req.params.numeracao;
+
+    repository.changeStatus(numeracao)
+    .then((status) => {
+        if(!status) {
+            res.status(404).json({ error: "Disponibilidade modificado" });
+        }
+        else {
+            res.status(200).json({ message: "Sala não encontrada"});
+        }
+    })
+}

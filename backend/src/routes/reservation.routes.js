@@ -12,6 +12,8 @@ router.get("/classroom/:matricula",     authenticateJWT, authorizeRoles('admin')
 router.patch("/classroom/:matricula" ,  authenticateJWT, authorizeRoles('admin'), controllerClassroom.updateClassroomReservation);
 router.delete("/classroom/:numeracao" , authenticateJWT, authorizeRoles('admin'), controllerClassroom.removeClassroomReservation);
 
+router.get("/classroom/:matricula/:hora" , authenticateJWT, authorizeRoles('admin'), controllerClassroom.getQtdAulaFromReservation);
+
 // (/reservation/material e etc) fazer reserva dos materiais
 router.get("/material",               authenticateJWT, authorizeRoles('admin'), controllerMaterial.getMaterialReservations);
 router.post("/material",              authenticateJWT, authorizeRoles('admin'), controllerMaterial.createMaterialReservation);

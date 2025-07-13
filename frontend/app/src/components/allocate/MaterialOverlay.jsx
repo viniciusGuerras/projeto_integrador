@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Button from "../ui/Button";
 
-export default function MaterialOverlay({ open, tab,onClose, onSubmit }) {
+export default function MaterialOverlay({ open, tab, onClose, onSubmit }) {
     const [userm, setUserm] = useState("");
     const [hraula, setHraula] = useState("");
     const [nmrm, setNmrm] = useState("");
@@ -17,27 +17,44 @@ export default function MaterialOverlay({ open, tab,onClose, onSubmit }) {
                 Authorization: `Bearer ${token}`,
             }
         })
-        .then(res => res.json())
-        .then(data => {
-            const materiaisDisponiveis = data.materials.filter(
-                mat => mat.ativo && mat.disponibilidade === "disponível"
-            );
-            setMaterials(materiaisDisponiveis);
-        });
+            .then(res => res.json())
+            .then(data => {
+                const materiaisDisponiveis = data.materials.filter(
+                    mat => mat.ativo && mat.disponibilidade === "disponível"
+                );
+                setMaterials(materiaisDisponiveis);
+            });
     }, []);
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setUserm(registration);
 
         if (!registration || !hraula || !nmrm) {
             return;
         }
 
+        const response = await fetch(`http://localhost:3000/reserevation/classroom/${registration}/${hraula}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+        const data = await response.json();
+        const qtdaula = data.quantidade; 
+
+        if (!qtdaula || isNaN(qtdaula)) {
+            alert("Quantidade inválida retornada do servidor.");
+            return;
+        }
+
+        const minutosAdicionais = parseInt(qtdaula) * 45;
+        const inicio = new Date(hraula);
+        const fim = new Date(inicio.getTime() + minutosAdicionais * 60000);
+
         onSubmit({
             userm: registration,
             hraula,
             nmrm: nmrm ? parseInt(nmrm) : null,
-            dtdevolum: dtdevolum || null,
+            dtdevolum: fim,
             ativo: true
         });
 
@@ -56,7 +73,7 @@ export default function MaterialOverlay({ open, tab,onClose, onSubmit }) {
 
                 <label className="text-sm font-medium">Hora da Aula (hraula)</label>
                 <input
-                    type="time"
+                    type="date"
                     value={hraula}
                     onChange={(e) => setHraula(e.target.value)}
                     className="w-full bg-slate-200 px-3 py-1.5 rounded"
@@ -77,14 +94,6 @@ export default function MaterialOverlay({ open, tab,onClose, onSubmit }) {
                         </option>
                     ))}
                 </select>
-
-                <label className="text-sm font-medium">Data Devolução (dtdevolum)</label>
-                <input
-                    type="date"
-                    value={dtdevolum}
-                    onChange={(e) => setDtdevolum(e.target.value)}
-                    className="w-full bg-slate-200 px-3 py-1.5 rounded"
-                />
 
                 <div className="flex justify-end gap-2 mt-4">
                     <Button variant="secondary" size="md" onClick={onClose}>

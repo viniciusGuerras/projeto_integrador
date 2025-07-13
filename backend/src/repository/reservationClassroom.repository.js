@@ -91,3 +91,11 @@ exports.removeClassroomReservation = async (id) => {
 
     return result;
 };
+
+exports.getQtdAula = async (id, hora) => {
+    const result = await db.query(
+        `SELECT qtdaula FROM prg_aula WHERE userm = $1 AND hraula = $2`, [id, hora] 
+    );
+
+    return result;
+}

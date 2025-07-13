@@ -1,7 +1,6 @@
 import AllocationCard from "./AllocationCard.jsx";
 import Button from "../ui/Button";
-import { useRef, useState } from "react";
-import AllocationOverlay from "./AllocationOverlay.jsx";
+import { act, useRef, useState } from "react";
 import AllocationEditOverlay from "./AllocationEditOverlay.jsx"
 import PrgAulaOverlay from "./PrgAulaOverlay.jsx";
 import MaterialOverlay from "./MaterialOverlay.jsx";
@@ -104,7 +103,9 @@ export default function AllocationPanel({ title }) {
             [activeTab]: [...prev[activeTab], newAllocation],
         }));
 
-        if (activeTab === "classroom") {
+        console.log("tab atual", activeTab)
+
+        if (activeTab === "classrooms") {
             try {
                 await fetch('http://localhost:3000/reservation/classroom', {
                     method: 'POST',
@@ -114,6 +115,15 @@ export default function AllocationPanel({ title }) {
                     },
                     body: JSON.stringify(reservationData),
                 });
+
+                await fetch(`http://localhost:3000/classrooms/${reservationData.nmrsala}/status`, {
+                    method: 'PATCH', 
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    }
+                });
+
                 console.log(reservationData)
             } catch (error) {
                 console.error('Erro ao salvar alocação:', error);

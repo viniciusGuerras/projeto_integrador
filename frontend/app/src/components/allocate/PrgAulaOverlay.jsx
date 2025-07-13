@@ -6,44 +6,59 @@ export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
     const [userm, setUserm] = useState("");
     const [hraula, setHraula] = useState("");
     const [nmrsala, setNmrsala] = useState("");
-    const [dthoradevolus, setDthoradevolus] = useState("");
     const [turma, setTurma] = useState("");
     const [disciplina, setDisciplina] = useState("");
     const [qtdaula, setQtdaula] = useState("");
 
     const [classrooms, setClassrooms] = useState([]);
-    
+
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        fetch("http://localhost:3000/classrooms", {
-        headers: {
-            Authorization: `Bearer ${token}`,
+        if (open) {
+            const fetchClassrooms = async () => {
+                try {
+                    const response = await fetch("http://localhost:3000/classrooms", {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+
+                    const data = await response.json();
+
+                    const salasDisponiveis = data.classrooms.filter(
+                        sala => sala.ativo && sala.disponibilidade === "disponível"
+                    );
+
+                    setClassrooms(salasDisponiveis);
+                } catch (error) {
+                    console.error("Erro ao buscar salas:", error);
+                }
+            };
+
+            fetchClassrooms();
         }
-        }).then(res => res.json())
-            .then(data => {
-                const salasDisponiveis = data.classrooms.filter(
-                    sala => sala.ativo && sala.disponibilidade === "disponível"
-                );
-                setClassrooms(salasDisponiveis);
-            });
-    }, []);
+    }, [open]);
 
     const registration = localStorage.getItem("identifier");
 
     const handleSubmit = () => {
 
         setUserm(registration);
-        
+
         if (!userm || !hraula || !turma || !disciplina || !qtdaula) {
             return;
         }
 
+        const minutosAdicionais = parseInt(qtdaula) * 45;
+        const inicio = new Date(hraula);
+        const fim = new Date(inicio.getTime() + minutosAdicionais * 60000);
+
         onSubmit({
-            userm : registration,
+            userm: registration,
             hraula,
             nmrsala: nmrsala ? parseInt(nmrsala) : null,
-            dthoradevolus: dthoradevolus || null,
+            dthoradevolus: fim,
             turma,
             disciplina,
             qtdaula: parseInt(qtdaula),
@@ -53,7 +68,6 @@ export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
         setUserm("");
         setHraula("");
         setNmrsala("");
-        setDthoradevolus("");
         setTurma("");
         setDisciplina("");
         setQtdaula("");
@@ -68,7 +82,7 @@ export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
 
                 <label className="text-sm font-medium">Hora da Aula (hraula)</label>
                 <input
-                    type="time"
+                    type="date"
                     value={hraula}
                     onChange={(e) => setHraula(e.target.value)}
                     className="w-full bg-slate-200 px-3 py-1.5 rounded"
@@ -92,14 +106,6 @@ export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
                         </option>
                     ))}
                 </select>
-
-                <label className="text-sm font-medium">Data Devolução (dthoradevolus)</label>
-                <input
-                    type="date"
-                    value={dthoradevolus}
-                    onChange={(e) => setDthoradevolus(e.target.value)}
-                    className="w-full bg-slate-200 px-3 py-1.5 rounded"
-                />
 
                 <label className="text-sm font-medium">Turma</label>
                 <input
