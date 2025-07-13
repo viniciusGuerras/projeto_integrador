@@ -1,15 +1,16 @@
-const repository = require("../repository/reservation.repository"); 
 
-exports.getReservationByNumber = async (req, res) => {
+const repository = require("../repository/reservationClassroom.repository"); 
+
+exports.getClassroomReservationByNumber = async (req, res) => {
     const reservationId = req.params.classreservationId; 
 
-    repository.findReservationByNumber(reservationId)
-    .then((fetchedReservation) => {
-        if(!fetchedReservation) {
+    repository.findClassroomReservationByNumber(reservationId)
+    .then((fetchedClassroomReservation) => {
+        if(!fetchedClassroomReservation) {
             res.status(404).json({ error: "Sala não encontrada" });
         }
         else {
-            res.status(200).json({ message: "Sala recuperada com sucesso", classreservation : fetchedReservation });
+            res.status(200).json({ message: "Sala recuperada com sucesso", classreservation : fetchedClassroomReservation });
         }
     })
     .catch((err) => {
@@ -18,8 +19,8 @@ exports.getReservationByNumber = async (req, res) => {
     });
 };
 
-exports.getReservations = (req, res) => {
-    repository.findAllReservations()
+exports.getClassroomReservations = (req, res) => {
+    repository.findAllClassroomReservations()
     .then((reservationList) => {
         if (reservationList && reservationList.length > 0) {
             res.status(200).json({ message: "Salas recuperadas com sucesso", classreservations: reservationList });
@@ -30,46 +31,46 @@ exports.getReservations = (req, res) => {
     });
 };
 
-exports.createReservation = async (req, res) => {
-    const { numeracao, especificacao, disponibilidade, qtdcadeira } = req.body;
+exports.createClassroomReservation = async (req, res) => {
+    const { userm, hraula, nmrsala, dthoradevolus, turma, disciplina, qtdaula} = req.body;
     console.log("req.body:", req.body);
 
-    if (!numeracao || !especificacao || !disponibilidade || !qtdcadeira) {
-        return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
+    if (!userm || !nmrsala || !hraula || !turma || !disciplina || qtdaula == null) {
+        return res.status(400).json({ error: 'Campos obrigatórios da reserva faltando' });
     }
 
-    if(qtdcadeira < 0){
-        return res.status(400).json({ error: 'qtdcadeira precisa ser maior que zero' });
+    if (qtdaula < 1) {
+        return res.status(400).json({ error: 'Quantidade de aulas deve ser maior que zero' });
     }
-    
-    const allowedDisponibility = ['disponível', 'indisponível'];
-    if (!allowedDisponibility.includes(disponibilidade.toLowerCase())) {
-        return res.status(400).json({ error: `Disponibilidade precisa ter um valor de: ${allowedDisponibility.join(', ')}` });
-    }
-    
+
     try {
         const reservationData = {
-            numeracao,
-            especificacao, 
-            disponibilidade, 
-            qtdcadeira
+            userm,
+            hraula,
+            nmrsala,
+            dthoradevolus,
+            turma,
+            disciplina,
+            qtdaula,
+            ativo: true
         };
-        
-        console.log("salvando", reservationData);
 
-        const newReservation = await repository.createReservation(reservationData); 
-        res.status(201).json({ message: "Sala criada com sucesso", reservation: newReservation});
+        console.log("Salvando reserva:", reservationData);
+
+        const newClassroomReservation = await repository.createClassroomReservation(reservationData);
+        res.status(201).json({ message: "Reserva criada com sucesso", reservation: newClassroomReservation });
     }
     catch (err) {
-        console.error("Erro criando a sala:", err);
+        console.error("Erro criando a reserva:", err);
         res.status(500).json({
-            error: "Erro criando a sala",
+            error: "Erro criando a reserva",
             detail: err?.message || JSON.stringify(err)
         });
     }
 };
 
-exports.updateReservation = async (req, res) => {
+
+exports.updateClassroomReservation = async (req, res) => {
     const numeracao = req.params.numeracao; 
 
     const { especificacao, disponibilidade, qtdcadeira } = req.body;
@@ -97,8 +98,8 @@ exports.updateReservation = async (req, res) => {
             qtdcadeira
         };
 
-        const updatedReservation = await repository.updateReservation(reservationData);
-        res.status(200).json({ message: "Sala atualizada com sucesso", reservation: updatedReservation });
+        const updatedClassroomReservation = await repository.updateClassroomReservation(reservationData);
+        res.status(200).json({ message: "Sala atualizada com sucesso", reservation: updatedClassroomReservation });
     }
     catch (err){
         console.error("Erro atualizando sala:", err);
@@ -109,17 +110,17 @@ exports.updateReservation = async (req, res) => {
     }
 };
 
-exports.removeReservation = async (req, res) => {
+exports.removeClassroomReservation = async (req, res) => {
 
     const numeracao = req.params.numeracao; 
 
-    repository.removeReservation(numeracao)
-    .then((removedReservation) => {
-        if(!removedReservation) {
+    repository.removeClassroomReservation(numeracao)
+    .then((removedClassroomReservation) => {
+        if(!removedClassroomReservation) {
             res.status(404).json({ error: "Sala não encontrada" });
         }
         else {
-            res.status(200).json({ message: "Sala desativada com sucesso", user : removedReservation });
+            res.status(200).json({ message: "Sala desativada com sucesso", user : removedClassroomReservation });
         }
     })
 }

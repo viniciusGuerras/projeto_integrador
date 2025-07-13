@@ -2,7 +2,7 @@ import { useState } from "react";
 import Button from "../ui/Button";
 import { useEffect } from "react";
 
-export default function PrgAulaOverlay({ open, tab, options, onClose, onSubmit }) {
+export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
     const [userm, setUserm] = useState("");
     const [hraula, setHraula] = useState("");
     const [nmrsala, setNmrsala] = useState("");
@@ -11,7 +11,6 @@ export default function PrgAulaOverlay({ open, tab, options, onClose, onSubmit }
     const [disciplina, setDisciplina] = useState("");
     const [qtdaula, setQtdaula] = useState("");
 
-    const [users, setUsers] = useState([]);
     const [classrooms, setClassrooms] = useState([]);
     
     const token = localStorage.getItem("token");
@@ -42,7 +41,7 @@ export default function PrgAulaOverlay({ open, tab, options, onClose, onSubmit }
 
         onSubmit({
             userm : registration,
-            hraula: parseInt(hraula),
+            hraula,
             nmrsala: nmrsala ? parseInt(nmrsala) : null,
             dthoradevolus: dthoradevolus || null,
             turma,
