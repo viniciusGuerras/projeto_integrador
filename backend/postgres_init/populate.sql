@@ -12,7 +12,7 @@ INSERT INTO users (
     true
 );
 
-INSERT INTO sala (numeracao, especificacao, disponibilidade, qtdcadeira, ativo) VALUES
+INSERT INTO sala (numeracao, especializacao, disponibilidade, qtdcadeira, ativo) VALUES
 (101, 'Laboratório de Informática', 'disponível', 30, true),
 (102, 'Sala de Aula 1', 'disponível', 25, true),
 (103, 'Sala de Aula 2', 'indisponível', 20, true),
@@ -23,7 +23,6 @@ INSERT INTO material (
     numeracao, nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr, estado, datacpra, tipo, ativo
 ) VALUES
 (1, 101, 5, 'disponível', 5, 'Notebook', 'Notebook Dell para aulas', 'bom', '2023-01-10', 'eletrônico', true),
-(2, 102, 10, 'disponível', 10, 'Cadeiras', 'Cadeiras ergonômicas', 'novo', '2022-08-15', 'mobília', true),
 (3, 103, 2, 'indisponível', 2, 'Projetor', 'Projetor Epson', 'quebrado', '2021-05-05', 'eletrônico', false),
 (4, 104, 1, 'disponível', 1, 'Mesa', 'Mesa de reunião grande', 'bom', '2023-05-22', 'mobília', true),
 (5, 105, 3, 'disponível', 3, 'TV 60"', 'TV para apresentações', 'bom', '2024-02-01', 'eletrônico', true);
