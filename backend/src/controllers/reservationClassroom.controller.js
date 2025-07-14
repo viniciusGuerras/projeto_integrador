@@ -35,7 +35,7 @@ exports.createClassroomReservation = async (req, res) => {
     const { userm, hraula, nmrsala, dthoradevolus, turma, disciplina, qtdaula} = req.body;
     console.log("req.body, creating a classroom reservation:", req.body);
 
-    if (!userm || !nmrsala || !hraula || !turma || !disciplina || qtdaula == null) {
+    if (!userm || !hraula || !turma || !disciplina || qtdaula == null) {
         return res.status(400).json({ error: 'Campos obrigatórios da reserva faltando' });
     }
 

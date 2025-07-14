@@ -107,7 +107,7 @@ export default function AllocationPanel({ title }) {
 
         if (activeTab === "classrooms") {
             try {
-                await fetch('http://localhost:3000/reservation/classroom', {
+                await fetch('http://localhost:3000/reservation/classrooms', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

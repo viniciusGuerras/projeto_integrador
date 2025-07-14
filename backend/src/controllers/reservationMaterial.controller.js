@@ -31,7 +31,7 @@ exports.getMaterialReservations = (req, res) => {
 };
 
 exports.createMaterialReservation = async (req, res) => {
-    const { userm, hraula, nmrmaterial, dthoradevolus, turma, disciplina, qtdaula, dtdevolum} = req.body;
+    const { userm, hraula, nmrm, dtdevolum} = req.body;
     console.log("req.body, creating material reservation:", req.body);
 
     if (!userm || !nmrmaterial || !hraula || !turma || !disciplina || qtdaula == null) {
@@ -47,10 +47,6 @@ exports.createMaterialReservation = async (req, res) => {
             userm,
             hraula,
             nmrm,
-            dthoradevolus,
-            turma,
-            disciplina,
-            qtdaula,
             dtdevolum,
             ativo: true
         };

@@ -14,7 +14,7 @@ exports.createMaterialReservation = async (reservation) => {
         userm,
         hraula,
         nmrm,
-        dthdevolum,
+        dtdevolum,
         ativo
     } = reservation;
 
@@ -26,7 +26,7 @@ exports.createMaterialReservation = async (reservation) => {
       userm,
       hraula,
       nmrm,
-      dtdevolum
+      new Date(dtdevolum)
     ]);
 };
 

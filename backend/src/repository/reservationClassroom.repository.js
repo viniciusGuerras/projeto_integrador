@@ -30,7 +30,7 @@ exports.createClassroomReservation = async (reservation) => {
         RETURNING *`,
         [
             userm,
-            hraula,
+            hraula === null ? null : hraula,
             nmrsala === '' ? null : parseInt(nmrsala),
             dthoradevolus ? new Date(dthoradevolus) : null,
             turma,
