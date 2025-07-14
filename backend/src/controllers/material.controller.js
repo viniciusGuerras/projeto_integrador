@@ -1,8 +1,5 @@
 const repository = require("../repository/material.repository");
 
-const bcrypt = require('bcrypt');
-const saltRounds = 10; 
-
 exports.getMaterialByNumber = async (req, res) => {
     const materialId = req.params.materialId;
 
@@ -37,7 +34,7 @@ exports.createMaterial = async (req, res) => {
     const { numeracao, nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr, estado, datacpra, tipo } = req.body;
     console.log("req.body:", req.body);
 
-    if (!numeracao || !qtdmaterial || !disponibilidade || !quantidade || !nome || !dscr || !estado || !datacpra || !tipo) {
+    if (!numeracao || !disponibilidade || !quantidade || !nome || !dscr || !estado || !datacpra || !tipo) {
         return res.status(400).json({ error: 'Faltando campos do material' });
     }
 
@@ -57,8 +54,8 @@ exports.createMaterial = async (req, res) => {
         };
 
         const newMaterial = await repository.createMaterial(materialData); 
-
         res.status(201).json({ message: "Material criado com sucesso", material: newMaterial });
+
     } catch (err) {
         console.error("Erro criando o material:", err);
         res.status(500).json({
@@ -67,3 +64,78 @@ exports.createMaterial = async (req, res) => {
         });
     }
 };
+
+exports.updateMaterial = async (req, res) => {
+    const numeracao = req.params.materialId; 
+
+    const { nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr, estado, datacpra, tipo } = req.body;
+
+     console.log(numeracao, nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr,estado, datacpra, tipo);
+    if (!disponibilidade || quantidade === undefined || !nome || !dscr || !estado || !datacpra || !tipo ) {
+        return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
+    }
+
+    if(quantidade < 0){
+        return res.status(400).json({ error: 'quantidade precisa ser maior que zero' });
+    }
+
+    const allowedDisponibility = ['disponível', 'indisponível'];
+    if (!allowedDisponibility.includes(disponibilidade.toLowerCase())) {
+        return res.status(400).json({ error: `Disponibilidade precisa ter um valor de: ${allowedDisponibility.join(', ')}` });
+    }
+
+    console.log("Atualizando material:", numeracao);
+
+    try {
+        const materialData = {
+            nmrsala : nmrsala !== '' ? nmrsala : null,
+            qtdmaterial: qtdmaterial !== 0 || '' ? qtdmaterial : null, 
+            disponibilidade, 
+            quantidade, 
+            nome, 
+            dscr, 
+            estado, 
+            datacpra, 
+            tipo
+        };
+
+        const updatedMaterial = await repository.updateMaterial(numeracao, materialData);
+        res.status(200).json({ message: "Material atualizado com sucesso", material: updatedMaterial });
+    }
+    catch (err){
+        console.error("Erro atualizando material:", err);
+        res.status(500).json({
+            error: "Erro atualizando material",
+            detail: err?.message || JSON.stringify(err)
+        });
+    }
+};
+
+exports.removeMaterial = async (req, res) => {
+
+    const numeracao = req.params.materialId; 
+
+    repository.removeMaterial(numeracao)
+    .then((removedMaterial) => {
+        if(!removedMaterial) {
+            res.status(404).json({ error: "Material não encontrado" });
+        }
+        else {
+            res.status(200).json({ message: "Material desativado com sucesso", material : removedMaterial });
+        }
+    })
+}
+
+exports.changeStatus = async (req, res) => {
+    const numeracao = req.params.numeracao;
+
+    repository.changeStatus(numeracao)
+    .then((status) => {
+        if(!status) {
+            res.status(404).json({ error: "Disponibilidade modificada" });
+        }
+        else {
+            res.status(200).json({ message: "Material não encontrado"});
+        }
+    })
+}

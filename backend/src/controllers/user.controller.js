@@ -28,7 +28,7 @@ function sendError(res, code, status=400){
     };
 
     return res.status(status).json({
-        error: messages[code] || "Erro desonhecido",
+        error: messages[code] || "Erro desconhecido",
         code
     })
 }
@@ -71,6 +71,25 @@ exports.getUserByRegistration = async (req, res) => {
         res.status(500).json({ message: "Ocorreu um erro" });
     });
 };
+
+exports.getUserProfile = async (req, res) => {
+    console.log("tentando buscar usuário")
+    try {
+        const matricula = req.user.registration; 
+        console.log(matricula);
+        const user = await repository.findUserByRegistration(matricula);
+        console.log("user found:", user);
+
+        if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado." });
+        }
+
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ message: "Erro ao buscar perfil.", error });
+  }
+};
+
 
 exports.getUsers = (req, res) => {
     repository.findAllUsers()
@@ -122,6 +141,7 @@ exports.createUser = async (req, res) => {
 };
 
 function validateUserFields(matricula, senha, cpf, nome, telefone, email, datanc, tipo){
+    console.log(matricula, senha, cpf, nome, telefone, email, datanc, tipo);
     if (!matricula || !senha || !cpf || !nome || !telefone || !email || !datanc || !tipo) {
         return ErrorCodes.MISSING_FIELDS;
     }
@@ -171,9 +191,11 @@ exports.updateUser = async (req, res) => {
     console.log("req.body:", req.body);
     try {
         const hashedSenha = await hashPassword(senha);
+        console.log("matrícula para atualizar:", matricula);
         console.log("Senha hasheada:", hashedSenha);
 
         const userData = {
+            matricula: matricula,
             senha: hashedSenha, 
             cpf,
             nome,

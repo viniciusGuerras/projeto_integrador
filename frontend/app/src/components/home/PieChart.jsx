@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 
-export default function PieChart({ data, colors, width = 300, height = 300 }) {
+export default function PieChart({ data, labels, colors, width = 300, height = 300 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export default function PieChart({ data, colors, width = 300, height = 300 }) {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
-      ctx.fillText(`${Math.round((value / total) * 100)}%`, labelX, labelY);
+      ctx.fillText(`${labels[i]}`, labelX, labelY);
 
       startAngle = endAngle;
     });

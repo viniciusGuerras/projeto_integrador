@@ -6,27 +6,94 @@ exports.findRoomByNumber = async (id) => {
 };
 
 exports.findAllRooms = async () => {
-    const result = await db.query("SELECT * FROM sala");
+    const result = await db.query("SELECT * FROM sala WHERE ativo = true");
     return result;
 }
+
 
 exports.createRoom = async (room) => {
     const {
         numeracao,
-        especificacao, 
+        especializacao, 
         disponibilidade, 
         qtdcadeira
     } = room;
 
     const result = await db.query(
-        `INSERT INTO sala (numeracao, especificacao, disponibilidade, qtdcadeira)
+        `INSERT INTO sala (numeracao, especializacao, disponibilidade, qtdcadeira)
         VALUES ($1, $2, $3, $4) RETURNING *`,
         [
             numeracao,
-            especificacao,
+            especializacao,
             disponibilidade,
-            qtdcadeira, 
+            qtdcadeira,
         ]
+    );
+
+    return result;
+};
+
+exports.updateRoom = async (roomData) => {
+    const {
+        numeracao,
+        especializacao,
+        disponibilidade,
+        qtdcadeira
+    } = roomData;
+
+    const result = await db.query(
+        `UPDATE sala
+         SET especializacao = $2,
+             disponibilidade = $3,
+             qtdcadeira = $4
+         WHERE numeracao = $1
+         RETURNING *`,
+        [
+            numeracao,
+            especializacao,
+            disponibilidade,
+            qtdcadeira
+        ]
+    );
+
+    return result;
+};
+
+exports.removeRoom = async (numeracao) => {
+    const result = await db.query(
+        `UPDATE sala
+        SET 
+            ativo = $2
+        WHERE numeracao = $1
+        RETURNING numeracao, especializacao`,
+    [
+        numeracao,
+        false
+    ]);
+
+    return result;
+}
+
+exports.changeStatus = async (numeracao) => {
+    const sala = await db.oneOrNone(
+        `SELECT disponibilidade FROM sala WHERE numeracao = $1`,
+        [numeracao]
+    );
+
+    if (!sala) {
+        throw new Error("Sala não encontrada");
+    }
+
+    const novaDisponibilidade = sala.disponibilidade === "disponível"
+        ? "indisponível"
+        : "disponível";
+
+    const result = await db.query(
+        `UPDATE sala
+         SET disponibilidade = $2
+         WHERE numeracao = $1
+         RETURNING *`,
+        [numeracao, novaDisponibilidade]
     );
 
     return result;

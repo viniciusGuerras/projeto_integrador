@@ -1,7 +1,6 @@
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function AddUser({isOpen, onClose, onSubmit, onError}) {
+export default function EditUser({ isOpen, onClose, initial, onSubmit, onError }) {
     const [user, setUser] = useState({
         matricula: '',
         senha: '',
@@ -14,23 +13,42 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
     });
 
     const [mensagem, setMensagem] = useState('');
-    const [serverError, setServerError] = useState(''); 
+    const [serverError, setServerError] = useState('');
 
-    const tipo = [
+    const tipoOptions = [
         { label: 'Administrador', value: 'admin' },
         { label: 'Docente', value: 'docente' },
     ];
 
     useEffect(() => {
-        if (isOpen) {
-        setMensagem('');
-        setServerError('');
+        if (isOpen && initial) {
+            
+            let formattedDate = '';
+            if (initial.datanc) {
+                const dateObj = new Date(initial.datanc);
+                if (!isNaN(dateObj.getTime())) {
+                    formattedDate = dateObj.toISOString().slice(0, 10);
+                }
+            }
+
+            setUser({
+                matricula: initial.matricula || '',
+                senha: '', 
+                cpf: initial.cpf || '',
+                nome: initial.nome || '',
+                telefone: initial.telefone || '',
+                email: initial.email || '',
+                dataNascimento: formattedDate || '',
+                tipo: initial.tipo || '',
+            });
+            setMensagem('');
+            setServerError('');
         }
-    }, [isOpen]);
+    }, [isOpen, initial]);
 
     useEffect(() => {
         if (typeof onError === "string") {
-        setServerError(onError);
+            setServerError(onError);
         }
     }, [onError]);
 
@@ -44,38 +62,41 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!user.nome ) {
-        setMensagem('Por favor, preencha os campos obrigatórios.');
-        return;
+        if (!user.nome) {
+            setMensagem('Por favor, preencha os campos obrigatórios.');
+            return;
         }
+
+        const matricula = user.matricula;
 
         const payload = {
             ...user,
             datanc: user.dataNascimento,
-            };
+        };
         delete payload.dataNascimento;
+        delete payload.matricula;  
 
-        console.log('Tentando cadastramento de:', user);
+        console.log('Tentando edição de:', user);
 
-        onSubmit(payload);
+        onSubmit(matricula, payload);
     };
 
     if (!isOpen) return null;
 
     return (
         <div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-        onClick={onClose}
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            onClick={onClose}
         >
-        <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow bg-white" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-xl font-bold mb-4">Cadastro de Usuário</h2>
-            {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
-            {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow bg-white" onClick={(e) => e.stopPropagation()}>
+                <h2 className="text-xl font-bold mb-4">Edição de Usuário</h2>
+                {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
+                {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <input
                         type="text"
                         name="matricula"
-                        placeholder="Matrícula: *"
+                        placeholder="matrícula"
                         value={user.matricula}
                         onChange={handleChange}
                         className="border p-2 rounded bg-white"
@@ -84,12 +105,11 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                     <input
                         type="password"
                         name="senha"
-                        placeholder="* * * * * * *"
+                        placeholder="senha"
                         value={user.senha}
                         onChange={handleChange}
                         className="border p-2 rounded bg-white"
                     />
-
 
                     <input
                         type="text"
@@ -122,9 +142,9 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                         type="text"
                         name="telefone"
                         placeholder="Telefone: *"
-                        value={user.telefone} 
+                        value={user.telefone}
                         onChange={handleChange}
-                        className="border p-2 rounded bg-white"
+                        className="border p-2 rounded bg-white "
                     />
 
                     <input type="date"
@@ -135,6 +155,7 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                         className="border p-2 rounded bg-white"
                     ></input>
 
+
                     <select
                         name="tipo"
                         value={user.tipo}
@@ -142,16 +163,16 @@ export default function AddUser({isOpen, onClose, onSubmit, onError}) {
                         className="border p-2 rounded bg-white"
                     >
                         <option value="">Selecione o tipo de usuário *</option>
-                        {tipo.map((t) => (
+                        {tipoOptions.map((t) => (
                             <option key={t.value} value={t.value}>{t.label}</option>
                         ))}
                     </select>
 
-                    <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-                        Cadastrar
+                    <button type="submit" className="bg-green-600 text-white py-2 px-4 rounded">
+                        Salvar
                     </button>
                 </form>
             </div>
         </div>
     );
-};
+}

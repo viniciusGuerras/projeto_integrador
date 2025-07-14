@@ -1,4 +1,4 @@
-CREATE TABLE "user" (
+CREATE TABLE users (
     matricula VARCHAR NOT NULL,
     senha VARCHAR NOT NULL, 
     cpf VARCHAR NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE "user" (
 
 CREATE TABLE sala (
     numeracao INT NOT NULL,
-    especificacao VARCHAR NOT NULL,
+    especializacao VARCHAR NOT NULL,
     disponibilidade VARCHAR NOT NULL,
     qtdcadeira INT NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT true,
@@ -37,9 +37,9 @@ CREATE TABLE material (
 
 CREATE TABLE prg_aula (
     userm VARCHAR NOT NULL,
-    hraula INT NOT NULL,
+    hraula TIMESTAMP NOT NULL,
     nmrsala INT NULL,
-    dthoradevolus DATE NULL,
+    dthoradevolus TIMESTAMP NULL,
     turma VARCHAR NOT NULL,
     disciplina VARCHAR NOT NULL,
     qtdaula INT NOT NULL,
@@ -49,9 +49,9 @@ CREATE TABLE prg_aula (
 
 CREATE TABLE rsr_material (
     userm VARCHAR NOT NULL,
-    hraula INT NOT NULL,
+    hraula TIMESTAMP NOT NULL,         
     nmrm INT NOT NULL,
-    dtddevolum DATE NOT NULL,
+    dtdevolum TIMESTAMP NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT true,
     CONSTRAINT pk_rsr_material PRIMARY KEY (userm, hraula, nmrm)
 );
@@ -62,7 +62,7 @@ ALTER TABLE material
 
 ALTER TABLE prg_aula 
     ADD CONSTRAINT fk_prg_aula_userm 
-    FOREIGN KEY (userm) REFERENCES "user" (matricula);
+    FOREIGN KEY (userm) REFERENCES users (matricula);
 
 ALTER TABLE prg_aula 
     ADD CONSTRAINT fk_prg_aula_nmrsala 

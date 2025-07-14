@@ -9,7 +9,7 @@ exports.getRoomByNumber = async (req, res) => {
             res.status(404).json({ error: "Sala não encontrada" });
         }
         else {
-            res.status(200).json({ message: "Sala recuperada com sucesso", room : fetchedRoom });
+            res.status(200).json({ message: "Sala recuperada com sucesso", classroom : fetchedRoom });
         }
     })
     .catch((err) => {
@@ -22,19 +22,19 @@ exports.getRooms = (req, res) => {
     repository.findAllRooms()
     .then((roomList) => {
         if (roomList && roomList.length > 0) {
-            res.status(200).json({ message: "Salas recuperadas com sucesso", room: roomList });
+            res.status(200).json({ message: "Salas recuperadas com sucesso", classrooms: roomList });
         } 
         else {
-            res.status(200).json({ message: "Nenhuma sala encontrada", rooms: [] });
+            res.status(200).json({ message: "Nenhuma sala encontrada", classrooms: [] });
         }
     });
 };
 
 exports.createRoom = async (req, res) => {
-    const { numeracao, especificacao, disponibilidade, qtdcadeira } = req.body;
+    const { numeracao, especializacao, disponibilidade, qtdcadeira } = req.body;
     console.log("req.body:", req.body);
 
-    if (!numeracao || !especificacao || !disponibilidade || !qtdcadeira) {
+    if (!numeracao || !especializacao || !disponibilidade || !qtdcadeira) {
         return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
     }
 
@@ -50,10 +50,12 @@ exports.createRoom = async (req, res) => {
     try {
         const roomData = {
             numeracao,
-            especificacao, 
+            especializacao, 
             disponibilidade, 
             qtdcadeira
         };
+        
+        console.log("salvando", roomData);
 
         const newRoom = await repository.createRoom(roomData); 
         res.status(201).json({ message: "Sala criada com sucesso", room: newRoom});
@@ -67,3 +69,72 @@ exports.createRoom = async (req, res) => {
     }
 };
 
+exports.updateRoom = async (req, res) => {
+    const numeracao = req.params.numeracao; 
+
+    const { especializacao, disponibilidade, qtdcadeira } = req.body;
+
+    if (!especializacao || !disponibilidade || qtdcadeira === undefined) {
+        return res.status(400).json({ error: 'Campos obrigatórios da sala faltando' });
+    }
+
+    if(qtdcadeira < 0){
+        return res.status(400).json({ error: 'qtdcadeira precisa ser maior que zero' });
+    }
+
+    const allowedDisponibility = ['disponível', 'indisponível'];
+    if (!allowedDisponibility.includes(disponibilidade.toLowerCase())) {
+        return res.status(400).json({ error: `Disponibilidade precisa ter um valor de: ${allowedDisponibility.join(', ')}` });
+    }
+
+    console.log("Atualizando sala:", numeracao);
+
+    try {
+        const roomData = {
+            numeracao,
+            especializacao,
+            disponibilidade,
+            qtdcadeira
+        };
+
+        const updatedRoom = await repository.updateRoom(roomData);
+        res.status(200).json({ message: "Sala atualizada com sucesso", room: updatedRoom });
+    }
+    catch (err){
+        console.error("Erro atualizando sala:", err);
+        res.status(500).json({
+            error: "Erro atualizando sala",
+            detail: err?.message || JSON.stringify(err)
+        });
+    }
+};
+
+exports.removeRoom = async (req, res) => {
+
+    const numeracao = req.params.numeracao; 
+
+    repository.removeRoom(numeracao)
+    .then((removedRoom) => {
+        if(!removedRoom) {
+            res.status(404).json({ error: "Sala não encontrada" });
+        }
+        else {
+            res.status(200).json({ message: "Sala desativada com sucesso", room : removedRoom });
+        }
+    })
+}
+
+exports.changeStatus = async (req, res) => {
+
+    const numeracao = req.params.numeracao;
+
+    repository.changeStatus(numeracao)
+    .then((status) => {
+        if(!status) {
+            res.status(404).json({ error: "Disponibilidade modificado" });
+        }
+        else {
+            res.status(200).json({ message: "Sala não encontrada"});
+        }
+    })
+}

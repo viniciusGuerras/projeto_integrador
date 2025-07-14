@@ -7,6 +7,8 @@ const {jwtSecret} = require("../config/jwt.js")
 exports.login = async (req, res, next) => {
     const {registration, password} = req.body; 
 
+    console.log("tentando logar com:", registration, password);
+    
     if (!registration || !password) {
         return res.status(400).json({ message: 'Nome de usuário e senha são obrigatórios' });
     }
@@ -27,7 +29,7 @@ exports.login = async (req, res, next) => {
         console.log(user);
         const token = jwt.sign(
             {
-                id: user.matricula, username: user.nome, role: user.tipo
+                registration: user.matricula, username: user.nome, role: user.tipo
             },
             jwtSecret,
             { 

@@ -1,145 +1,201 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function AddMaterial({isOpen, onClose}) {
-  const [material, setMaterial] = useState({
-    numeracao: '',
-    nome: '',
-    descricao: '',
-    tipo: '',
-    quantidade: '',
-    estado: '',
-    dataCompra: '',
-    disponibilidade: '',
-  });
-
-  const [mensagem, setMensagem] = useState('');
-
-  const estado = ['Novo', 'Levemente danificado', 'Inutilizável', ];
-  const disponibilidade = ['Disponível', 'Indisponível', 'Reservado'];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setMaterial((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Validação simples
-    if (!material.nome || !material.descricao || !material.tipo) {
-      setMensagem('Por favor, preencha os campos obrigatórios.');
-      return;
-    }
-
-    // Aqui você pode salvar no backend, por exemplo
-    console.log('Material cadastrado:', material);
-
-    setMensagem('Material cadastrado com sucesso!');
-    setMaterial({
-      numeracao: '',
-      nome: '',
-      descricao: '',
-      tipo: '',
-      quantidade: '',
-      estado: '',
-      dataCompra: '',
-      disponibilidade: '',
+export default function AddMaterial({ isOpen, onClose, onSubmit, onError }) {
+    const [material, setMaterial] = useState({
+        numeracao: '',
+        nmrsala: '',
+        nome: '',
+        dscr: '',
+        tipo: '',
+        qtdmaterial: '',
+        quantidade: '',
+        estado: '',
+        datacpra: '',
+        disponibilidade: '',
     });
-  };
 
-  if (!isOpen) return null;
+    const [mensagem, setMensagem] = useState('');
+    const [serverError, setServerError] = useState('');
 
-  return (
-    <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-      onClick={onClose} 
-    >
-    <div className="max-w-md mx-auto mt-10 p-6 border rounded shadow  bg-white" onClick={(e) => e.stopPropagation()}>
-      <h2 className="text-xl font-bold mb-4">Cadastro de Material</h2>
-        {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="text"
-            name="numeracao"
-            placeholder="Numeração do material *"
-            value={material.numeracao}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
+    const estado = ['Novo', 'Levemente danificado', 'Inutilizável'];
+    const disponibilidade = ['Disponível', 'Indisponível', 'Reservado'];
 
-          <input
-            type="text"
-            name="nome"
-            placeholder="Nome do material *"
-            value={material.nome}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
+    useEffect(() => {
+        if (isOpen) {
+            setMensagem('');
+            setServerError('');
+        }
+    }, [isOpen]);
 
-          <input
-            type="text"
-            name="descricao"
-            placeholder="Descrição do Material: *"
-            value={material.descricao}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
+    useEffect(() => {
+        if (typeof onError === "string") {
+            setServerError(onError);
+        }
+    }, [onError]);
 
-          <input
-            type="text"
-            name="tipo"
-            placeholder="Tipo *"
-            value={material.tipo}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setMaterial((prev) => ({ ...prev, [name]: value }));
+        setMensagem('');
+        setServerError('');
+    };
 
-          <input
-            type="number"
-            name="quantidade"
-            placeholder="Quantidade *"
-            value={material.quantidade} 
-            onChange={handleChange}
-            className="border p-2 rounded"
-          />
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-          <select
-            name="estado"
-            value={material.estado}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="">Selecione o estado *</option>
-            {estado.map((un) => (
-              <option key={un} value={un}>{un}</option>
-            ))}
-          </select>
+        const required = ['nome', 'dscr', 'tipo', 'quantidade', 'estado', 'datacpra', 'disponibilidade'];
+        const hasEmpty = required.some((key) => !material[key]);
 
-          <textarea
-            name="dataCompra"
-            placeholder="Data de Compra (DD/MM/AAAA)"
-            value={material.dataCompra}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          ></textarea>
+        if (hasEmpty) {
+            setMensagem('Por favor, preencha todos os campos obrigatórios.');
+            return;
+        }
 
-          <select
-            name="disponibilidade"
-            value={material.disponibilidade}
-            onChange={handleChange}
-            className="border p-2 rounded"
-          >
-            <option value="">Selecione a disponibilidade</option>
-            {disponibilidade.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+        if (parseInt(material.quantidade) <= 0) {
+            setMensagem('A quantidade deve ser maior que zero.');
+            return;
+        }
 
-          <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
-            Cadastrar
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-};
+        const payload = {
+            ...material,
+            disponibilidade: material.disponibilidade.toLowerCase(),
+            estado: material.estado.toLowerCase(),
+        };
+
+        onSubmit(payload);
+
+        setMaterial({
+            numeracao: '',
+            nmrsala: '',
+            nome: '',
+            dscr: '',
+            tipo: '',
+            qtdmaterial: '',
+            quantidade: '',
+            estado: '',
+            datacpra: '',
+            disponibilidade: '',
+        });
+    };
+
+    if (!isOpen) return null;
+
+    return (
+        <div
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            onClick={onClose}
+        >
+            <div
+                className="max-w-md mx-auto mt-10 p-6 border rounded shadow bg-white"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <h2 className="text-xl font-bold mb-4">Cadastro de Material</h2>
+                {mensagem && <p className="mb-4 text-green-600">{mensagem}</p>}
+                {serverError && <p className="mb-4 text-red-700 font-semibold">{serverError}</p>}
+
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <input
+                        type="text"
+                        name="numeracao"
+                        placeholder="Numeração do material *"
+                        value={material.numeracao}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+                    <input
+                        type="text"
+                        name="nome"
+                        placeholder="Nome do material *"
+                        value={material.nome}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+                    <input
+                        type="text"
+                        name="dscr"
+                        placeholder="Descrição do material *"
+                        value={material.dscr}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+                    <input
+                        type="text"
+                        name="tipo"
+                        placeholder="Tipo do material *"
+                        value={material.tipo}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+                    <input
+                        type="text"
+                        name="nmrsala"
+                        placeholder="Sala (opcional)"
+                        value={material.nmrsala}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+                    <input
+                        type="number"
+                        name="qtdmaterial"
+                        placeholder="Quantia na sala (opcional)"
+                        value={material.qtdmaterial}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+
+                    <input
+                        type="number"
+                        name="quantidade"
+                        placeholder="Quantidade *"
+                        value={material.quantidade}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+                    <select
+                        name="estado"
+                        value={material.estado}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    >
+                        <option value="">Selecione o estado *</option>
+                        {estado.map((e) => (
+                            <option key={e} value={e}>{e}</option>
+                        ))}
+                    </select>
+
+                    <input
+                        type="date"
+                        name="datacpra"
+                        placeholder="Data de compra *"
+                        value={material.datacpra}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    />
+
+                    <select
+                        name="disponibilidade"
+                        value={material.disponibilidade}
+                        onChange={handleChange}
+                        className="border p-2 rounded bg-white"
+                    >
+                        <option value="">Selecione a disponibilidade *</option>
+                        {disponibilidade.map((d) => (
+                            <option key={d} value={d}>{d}</option>
+                        ))}
+                    </select>
+
+                    <button type="submit" className="bg-blue-600 text-white py-2 px-4 rounded">
+                        Cadastrar
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}

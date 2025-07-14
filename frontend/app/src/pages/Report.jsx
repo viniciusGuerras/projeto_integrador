@@ -1,36 +1,139 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Report(){
-    const [activeTab, setActiveTab] = useState("classrooms")
+export default function Report() {
+    const [activeTab, setActiveTab] = useState("classrooms");
+    const [data, setData] = useState([]);
 
-    return(
+    const [sortBy, setSortBy] = useState("nome");
+    const [sortOrder, setSortOrder] = useState("ASC");
+    const [ativo, setAtivo] = useState(true);
+
+    const fetchData = async () => {
+        let type;
+
+        if (activeTab === "classrooms") {
+            type = "sala";
+        }
+        else if (activeTab === "materials") {
+            type = "material";
+        }
+        else {
+            type = "all";
+        }
+
+        try {
+            const res = await fetch(`http://localhost:3000/reservation?type=${type}&sortBy=${sortBy}&sortOrder=${sortOrder}&ativo=${ativo}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                });
+            const json = await res.json();
+            setData(json.reservations || []);
+        } catch (err) {
+            console.error("Erro ao buscar dados:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [activeTab, sortBy, sortOrder, ativo]);
+
+    const headers = [
+        "tipo", "nome", "matricula", "item", "horario",
+        "turma", "disciplina", "qtdaula", "data_devolucao"
+    ];
+
+    return (
         <div className="w-full flex items-center justify-center gap-3">
-            <div className="w-1/3 h-1/3 p-6 bg-white text-slate-500 rounded-xl flex flex-col gap-3">
-                <h1 className="text-xl text-slate-900 font-semibold">Relatório</h1>
-                <span className="border-b border-slate-300"></span>
-                <ul className="flex w-full items-start">
+            <div className="w-4/5 p-6 bg-white text-slate-600 rounded-xl flex flex-col gap-6">
+                <h1 className="text-2xl text-slate-900 font-bold">Relatório</h1>
+
+                <ul className="flex gap-4">
                     <li
-                    className={`cursor-pointer px-3 py-1 rounded ${
-                    activeTab === "classrooms" ? "outline outline-solid outline-slate-300 font-semibold" : ""
-                    }`}
-                    onClick={() => setActiveTab("classrooms")}
-                    >salas
+                        className={`cursor-pointer px-4 py-2 rounded ${activeTab === "all" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
+                            }`}
+                        onClick={() => setActiveTab("all")}
+                    >
+                        Todos
+                    </li>
+                    <li
+                        className={`cursor-pointer px-4 py-2 rounded ${activeTab === "classrooms" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
+                            }`}
+                        onClick={() => setActiveTab("classrooms")}
+                    >
+                        Salas
+                    </li>
+                    <li
+                        className={`cursor-pointer px-4 py-2 rounded ${activeTab === "materials" ? "bg-slate-200 font-semibold" : "hover:bg-slate-100"
+                            }`}
+                        onClick={() => setActiveTab("materials")}
+                    >
+                        Materiais
                     </li>
 
-                    <li
-                    className={`cursor-pointer px-3 py-1 rounded ${
-                    activeTab === "materials" ? "outline outline-solid outline-slate-300 font-semibold" : ""
-                    }`}
-                    onClick={() => setActiveTab("materials")}
-                    >materiais
-                    </li>
                 </ul>
 
-                <div className="flex flex-grow gap-4 items-center justify-center">
-                    <h1>Download</h1>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-12">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                    </svg>
+                <div className="flex flex-wrap items-center gap-4">
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700">Ordenar por</label>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                            className="border px-3 py-1 rounded bg-white"
+                        >
+                            <option value="nome">Nome</option>
+                            <option value="matricula">Matrícula</option>
+                            <option value="horario">Horário</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-slate-700">Ordem</label>
+                        <select
+                            value={sortOrder}
+                            onChange={(e) => setSortOrder(e.target.value)}
+                            className="border px-3 py-1 rounded bg-white"
+                        >
+                            <option value="ASC">Ascendente</option>
+                            <option value="DESC">Descendente</option>
+                        </select>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-6">
+                        <input
+                            id="ativo"
+                            type="checkbox"
+                            checked={ativo}
+                            onChange={() => setAtivo((prev) => !prev)}
+                        />
+                        <label htmlFor="ativo" className="text-sm">Ativo</label>
+                    </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border text-sm text-left">
+                        <thead className="bg-slate-100 text-slate-700 font-semibold">
+                            <tr>
+                                {headers.map((head) => (
+                                    <th key={head} className="px-4 py-2 border">{head}</th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.map((row, idx) => (
+                                <tr key={idx} className="hover:bg-slate-50">
+                                    {headers.map((key) => (
+                                        <td key={key} className="px-4 py-2 border">
+                                            {key === "data_devolucao" && row[key]
+                                                ? new Date(row[key]).toLocaleString()
+                                                : row[key] ?? "-"}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
