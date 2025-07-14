@@ -80,7 +80,7 @@ export default function MaterialOverlay({ open, tab, onClose, onSubmit }) {
 
                 <label className="text-sm font-medium">Hora da Aula</label>
                 <input
-                    type="date"
+                    type="datetime-local"
                     value={hraula}
                     onChange={(e) => setHraula(e.target.value)}
                     className="w-full bg-slate-200 px-3 py-1.5 rounded"

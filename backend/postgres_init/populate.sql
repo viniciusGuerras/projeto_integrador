@@ -23,6 +23,7 @@ INSERT INTO material (
     numeracao, nmrsala, qtdmaterial, disponibilidade, quantidade, nome, dscr, estado, datacpra, tipo, ativo
 ) VALUES
 (1, 101, 5, 'disponível', 5, 'Notebook', 'Notebook Dell para aulas', 'bom', '2023-01-10', 'eletrônico', true),
+(2, 102, 3, 'disponível', 3, 'Quadro Branco', 'Quadro branco para anotações', 'novo', '2023-03-15', 'mobília', true),
 (3, 103, 2, 'indisponível', 2, 'Projetor', 'Projetor Epson', 'quebrado', '2021-05-05', 'eletrônico', false),
 (4, 104, 1, 'disponível', 1, 'Mesa', 'Mesa de reunião grande', 'bom', '2023-05-22', 'mobília', true),
 (5, 105, 3, 'disponível', 3, 'TV 60"', 'TV para apresentações', 'bom', '2024-02-01', 'eletrônico', true);
