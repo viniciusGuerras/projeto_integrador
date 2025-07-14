@@ -14,10 +14,15 @@ exports.reservationReportQuery = async ({ type = 'all', sortBy = 'nome', sortOrd
 
     let sortByOption;
 
-    if (sortColumn == "horario") {
-        sortByOption = "pa.hraula"
-    }
-    else {
+    if (sortColumn === "horario") {
+        if (finalType === "sala") {
+            sortByOption = "pa.hraula";
+        } else if (finalType === "material") {
+            sortByOption = "rm.hraula";
+        } else {
+            sortByOption = "horario";
+        }
+    } else {
         sortByOption = `u.${sortColumn}`;
     }
 
