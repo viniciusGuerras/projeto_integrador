@@ -94,8 +94,8 @@ export default function AllocationPanel({ title }) {
     const handleAllocations = async (reservationData) => {
         const newAllocation = {
             key: idCounter.current++,
-            identifier: reservationData.userm,
-            day: reservationData.dthoradevolus,
+            identifier: activeTab === "classrooms" ? reservationData.userm : reservationData.prg_aula.userm,
+            day: activeTab === "classrooms" ? reservationData.dthoradevolus : reservationData.prg_aula.dthoradevolus,
         };
 
         setAllocations(prev => ({
@@ -131,13 +131,21 @@ export default function AllocationPanel({ title }) {
         }
         else {
             try {
+                await fetch('http://localhost:3000/reservation/classroom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                    body: JSON.stringify(reservationData.prg_aula),
+                });
                 await fetch('http://localhost:3000/reservation/material', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
-                    body: JSON.stringify(reservationData),
+                    body: JSON.stringify(reservationData.rsr_material),
                 });
                 console.log(reservationData)
             } catch (error) {

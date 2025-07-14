@@ -80,7 +80,7 @@ export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
             <div className="flex flex-col gap-3 bg-slate-50 rounded-lg p-6 w-96" onClick={(e) => e.stopPropagation()}>
                 <h2 className="text-xl font-semibold mb-2">{tab}</h2>
 
-                <label className="text-sm font-medium">Hora da Aula (hraula)</label>
+                <label className="text-sm font-medium">Hora da Aula</label>
                 <input
                     type="date"
                     value={hraula}
@@ -89,7 +89,7 @@ export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
                     required
                 />
 
-                <label className="text-sm font-medium">Número da Sala (nmrsala)</label>
+                <label className="text-sm font-medium">Número da Sala</label>
                 <select
                     value={nmrsala}
                     onChange={(e) => setNmrsala(e.target.value)}
@@ -125,7 +125,7 @@ export default function PrgAulaOverlay({ open, tab, onClose, onSubmit }) {
                     required
                 />
 
-                <label className="text-sm font-medium">Quantidade de Aulas (qtdaula)</label>
+                <label className="text-sm font-medium">Quantidade de Aulas</label>
                 <input
                     type="number"
                     value={qtdaula}

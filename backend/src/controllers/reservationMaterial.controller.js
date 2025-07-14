@@ -6,14 +6,14 @@ exports.getMaterialReservationById = async (req, res) => {
     repository.findMaterialReservationByNumber(reservationId)
         .then((fetchedMaterialReservation) => {
             if (!fetchedMaterialReservation) {
-                res.status(404).json({ error: "Material não encontrado" });
+                res.status(404).json({ error: "Reserva de material não encontrada" });
             }
             else {
-                res.status(200).json({ message: "Material recuperado com sucesso", materialreservation: fetchedMaterialReservation });
+                res.status(200).json({ message: "Reserva de material recuperada com sucesso", materialreservation: fetchedMaterialReservation });
             }
         })
         .catch((err) => {
-            console.error("Erro ao buscar material pelo número:", err);
+            console.error("Erro ao buscar reserva pelo número:", err);
             res.status(500).json({ message: "Ocorreu um erro" });
         });
 };
@@ -22,17 +22,17 @@ exports.getMaterialReservations = (req, res) => {
     repository.findAllMaterialsReservations()
         .then((reservationList) => {
             if (reservationList && reservationList.length > 0) {
-                res.status(200).json({ message: "Materiais recuperados com sucesso", materialsreservations: reservationList });
+                res.status(200).json({ message: "Reservas de materiais recuperadas com sucesso", materialsreservations: reservationList });
             } 
             else {
-                res.status(200).json({ message: "Nenhum material encontrado", materialreservations: [] });
+                res.status(200).json({ message: "Nenhuma reserva encontrado", materialreservations: [] });
             }
         });
 };
 
 exports.createMaterialReservation = async (req, res) => {
-    const { userm, hraula, nmrmaterial, dthoradevolus, turma, disciplina, qtdaula} = req.body;
-    console.log("req.body:", req.body);
+    const { userm, hraula, nmrmaterial, dthoradevolus, turma, disciplina, qtdaula, dtdevolum} = req.body;
+    console.log("req.body, creating material reservation:", req.body);
 
     if (!userm || !nmrmaterial || !hraula || !turma || !disciplina || qtdaula == null) {
         return res.status(400).json({ error: 'Campos obrigatórios da reserva faltando' });
@@ -46,11 +46,12 @@ exports.createMaterialReservation = async (req, res) => {
         const reservationData = {
             userm,
             hraula,
-            nmrmaterial,
+            nmrm,
             dthoradevolus,
             turma,
             disciplina,
             qtdaula,
+            dtdevolum,
             ativo: true
         };
 

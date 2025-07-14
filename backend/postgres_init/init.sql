@@ -51,7 +51,7 @@ CREATE TABLE rsr_material (
     userm VARCHAR NOT NULL,
     hraula DATE NOT NULL,         
     nmrm INT NOT NULL,
-    dtddevolum DATE NOT NULL,
+    dtdevolum DATE NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT true,
     CONSTRAINT pk_rsr_material PRIMARY KEY (userm, hraula, nmrm)
 );
