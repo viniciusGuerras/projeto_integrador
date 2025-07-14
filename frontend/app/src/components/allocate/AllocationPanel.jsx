@@ -23,46 +23,50 @@ export default function AllocationPanel({ title }) {
         materials: [],
     });
 
+    const fetchData = async () => {
+        try {
+            const classResponse = await fetch("http://localhost:3000/reservation/classroom", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+
+            const classData = await classResponse.json();
+
+            const materialResponse = await fetch("http://localhost:3000/reservation/material", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            });
+
+            const materialData = await materialResponse.json();
+
+            const formatAllocationClassrooms = (item) => ({
+                key: idCounter.current++,
+                subject: item.disciplina,
+                identifier: `Sala ${item.nmrsala} - ${item.disciplina}`,
+                day: item.dthoradevolus,
+            });
+
+            const formatAllocationMaterials = (item) => ({
+                key: idCounter.current++,
+                identifier: item.nome,
+                day: item.dtddevolum,
+            });
+
+            const classrooms = classData.classreservations.map(formatAllocationClassrooms);
+            const materials = materialData.materialsreservations.map(formatAllocationMaterials);
+
+            setAllocations({
+                classrooms,
+                materials,
+            });
+        } catch (error) {
+            console.error("Erro ao carregar reservas:", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const classResponse = await fetch("http://localhost:3000/reservation/classroom", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
-
-                const classData = await classResponse.json();
-
-                const materialResponse = await fetch("http://localhost:3000/reservation/material", {
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
-
-                const materialData = await materialResponse.json();
-
-                console.log(classData, "and", materialData);
-
-                const formatAllocation = (item) => ({
-                    key: idCounter.current++,
-                    identifier: item.userm,
-                    day: item.dthoradevolus,
-                });
-
-                const classrooms = classData.classreservations.map(formatAllocation);
-                const materials = materialData.materialreservations.map(formatAllocation);
-
-                setAllocations({
-                    classrooms,
-                    materials
-                });
-            } catch (error) {
-                console.error("Erro ao carregar reservas:", error);
-            }
-        };
-
         fetchData();
     }, []);
 
@@ -92,22 +96,9 @@ export default function AllocationPanel({ title }) {
     };
 
     const handleAllocations = async (reservationData) => {
-        const newAllocation = {
-            key: idCounter.current++,
-            identifier: activeTab === "classrooms" ? reservationData.userm : reservationData.prg_aula.userm,
-            day: activeTab === "classrooms" ? reservationData.dthoradevolus : reservationData.prg_aula.dthoradevolus,
-        };
-
-        setAllocations(prev => ({
-            ...prev,
-            [activeTab]: [...prev[activeTab], newAllocation],
-        }));
-
-        console.log("tab atual", activeTab)
-
         if (activeTab === "classrooms") {
             try {
-                await fetch('http://localhost:3000/reservation/classrooms', {
+                await fetch('http://localhost:3000/reservation/classroom', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -117,7 +108,7 @@ export default function AllocationPanel({ title }) {
                 });
 
                 await fetch(`http://localhost:3000/classrooms/${reservationData.nmrsala}/status`, {
-                    method: 'PATCH', 
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -147,13 +138,20 @@ export default function AllocationPanel({ title }) {
                     },
                     body: JSON.stringify(reservationData.rsr_material),
                 });
+                await fetch(`http://localhost:3000/materials/${reservationData.rsr_material.nmrm}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    }
+                });
                 console.log(reservationData)
             } catch (error) {
                 console.error('Erro ao salvar alocação:', error);
             }
         }
 
-        console.log('Alocação salva com sucesso de:', reservationData);
+        await fetchData();
         toggleOverlay(false)
     };
 

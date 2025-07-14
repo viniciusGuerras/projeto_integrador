@@ -3,7 +3,7 @@ const db = require("../config/db");
 exports.reservationReportQuery = async ({ type = 'all', sortBy = 'nome', sortOrder = 'ASC', ativo = true
 } = {}) => {
     const validTypes = ['sala', 'material'];
-    const validSortBy = ['nome', 'matricula', 'data'];
+    const validSortBy = ['nome', 'matricula', 'horario'];
     const validSortOrder = ['ASC', 'DESC'];
 
     console.log("Input params:", { type, sortBy, sortOrder, ativo });
@@ -12,12 +12,9 @@ exports.reservationReportQuery = async ({ type = 'all', sortBy = 'nome', sortOrd
     const sortColumn = validSortBy.includes(sortBy) ? sortBy : 'nome';
     const order = validSortOrder.includes(sortOrder.toUpperCase()) ? sortOrder.toUpperCase() : 'ASC';
 
-    console.log("Sanitized params:", { finalType, sortColumn, order });
-    const finalAtivo = (typeof ativo === 'string') ? ativo.toLowerCase() === 'true' : Boolean(ativo);
-
     let sortByOption;
 
-    if (sortColumn == "data") {
+    if (sortColumn == "horario") {
         sortByOption = "pa.hraula"
     }
     else {
@@ -47,7 +44,7 @@ exports.reservationReportQuery = async ({ type = 'all', sortBy = 'nome', sortOrd
 
         console.log("Executing query for 'sala':", query);
         result = await db.query(query);
-    } else if (finalType === 'material') {
+    }else if (finalType === 'material') {
         query = `
             SELECT 
                 'material' AS tipo,
@@ -101,7 +98,7 @@ exports.reservationReportQuery = async ({ type = 'all', sortBy = 'nome', sortOrd
         JOIN prg_aula pr ON rm.userm = pr.userm AND rm.hraula = pr.hraula
         WHERE rm.ativo = ${ativo}
       )
-      ORDER BY ${sortColumn} ${order};
+      ORDER BY ${sortBy} ${order};
     `;
         console.log("Executing combined query (sala + material):", query);
         result = await db.query(query);

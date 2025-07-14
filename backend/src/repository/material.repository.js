@@ -29,7 +29,7 @@ exports.createMaterial = async (material) => {
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
         [
             numeracao,
-            nmrsala,
+            nmrsala === '' ? null : nmrsala, 
             qtdmaterial === '' ? null : qtdmaterial,
             disponibilidade, 
             quantidade, 
@@ -101,3 +101,28 @@ exports.removeMaterial = async (numeracao) => {
 
     return result;
 }
+
+exports.changeStatus = async (numeracao) => {
+    const material = await db.oneOrNone(
+        `SELECT disponibilidade FROM material WHERE numeracao = $1`,
+        [numeracao]
+    );
+
+    if (!material) {
+        throw new Error("Material não encontrado");
+    }
+
+    const novaDisponibilidade = material.disponibilidade === "disponível"
+        ? "indisponível"
+        : "disponível";
+
+    const result = await db.query(
+        `UPDATE material
+         SET disponibilidade = $2
+         WHERE numeracao = $1
+         RETURNING *`,
+        [numeracao, novaDisponibilidade]
+    );
+
+    return result;
+};

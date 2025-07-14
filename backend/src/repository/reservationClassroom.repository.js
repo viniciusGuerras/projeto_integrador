@@ -6,7 +6,7 @@ exports.findClassroomReservationById = async (id) => {
 };
 
 exports.findAllClassroomReservations = async () => {
-    const result = await db.query("SELECT * FROM prg_aula");
+    const result = await db.query("SELECT * FROM prg_aula p JOIN sala s ON p.nmrsala = s.numeracao");
     return result;
 };
 

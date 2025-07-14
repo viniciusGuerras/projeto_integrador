@@ -34,12 +34,8 @@ exports.createMaterialReservation = async (req, res) => {
     const { userm, hraula, nmrm, dtdevolum} = req.body;
     console.log("req.body, creating material reservation:", req.body);
 
-    if (!userm || !nmrmaterial || !hraula || !turma || !disciplina || qtdaula == null) {
+    if (!userm || !nmrm || !hraula || !dtdevolum) {
         return res.status(400).json({ error: 'Campos obrigatórios da reserva faltando' });
-    }
-
-    if (qtdaula < 1) {
-        return res.status(400).json({ error: 'Quantidade de aulas deve ser maior que zero' });
     }
 
     try {

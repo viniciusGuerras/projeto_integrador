@@ -3,7 +3,7 @@ import Calendar from "../components/home/Calendar.jsx";
 import MainCard from '../components/home/MainCard.jsx'
 import { useEffect, useState } from "react";
 
-function NotificationCard({ title, description, level }) {
+function NotificationCard({ title, description, date, level }) {
     const textColors = {
         warning: "text-red-900",
         alert: "text-yellow-900",
@@ -26,14 +26,22 @@ function NotificationCard({ title, description, level }) {
 export default function Home() {
     const [classroomCount, setClassroomCount] = useState(0);
     const [materialsCount, setMaterialsCount] = useState(0);
+    const [itemTypes, setItemTypes] = useState([]);
+    const [notificationItems, setNotificationTypes] = useState([]);
 
-    //placeholder data for pie chart
-    const slateShades = [
-        '#64748B', // slate-500
-        '#94A3B8', // slate-400
-        '#CBD5E1', // slate-300
+    const pastelColors = [
+        '#f4a7b9',
+        '#f9e79f',
+        '#aed9c4',
+        '#a7c7e7',
+        '#d7bde2',
+        '#f5cba7',
+        '#a3e4d7',
+        '#f5b7b1',
+        '#a2d9ce',
+        '#d2b4de',
     ];
-    const sampleData = [10, 20, 30];
+
 
     const notifications = [
         { title: 'Alerta', description: 'Tranque a porta', level: 'warning' },
@@ -50,9 +58,8 @@ export default function Home() {
                 });
 
                 const classData = await classResponse.json();
-
-                console.log(classData);
                 setClassroomCount(classData.classreservations.length);
+                const classroomNotifications = classData.classreservations.map((item) => ({ title: `Sala ${item.numeracao}`, description: new Date(item.dthoradevolus).toLocaleString(), date: new Date(item.dthoradevolus), level: 'warning' }));
 
                 const materialResponse = await fetch("http://localhost:3000/reservation/material", {
                     headers: {
@@ -61,9 +68,24 @@ export default function Home() {
                 });
 
                 const materialData = await materialResponse.json();
+                const itemTypes = materialData.materialsreservations.map((item) => item.tipo);
 
-                console.log(materialData);
-                setMaterialsCount(materialData.materialreservations.length);
+                const counts = {};
+
+                for (let tipo of itemTypes) {
+                    counts[tipo] = (counts[tipo] || 0) + 1;
+                }
+
+                setMaterialsCount(materialData.materialsreservations.length);
+                const materialNotifications = materialData.materialsreservations.map((item) => ({ title: item.nome, description: new Date(item.dtddevolum).toLocaleString(), date: new Date(item.dtddevolum), level: 'warning' }));
+                setItemTypes(counts);
+
+                const combinedNotifications = [...classroomNotifications, ...materialNotifications]
+                    .sort((a, b) => b.date - a.date) 
+                    .slice(0, 5); 
+
+                setNotificationTypes(combinedNotifications);
+
 
             } catch (error) {
                 console.error("Erro ao carregar reservas:", error);
@@ -82,7 +104,7 @@ export default function Home() {
                 </svg>}
                 children={
                     <div className="h-full w-full flex flex-col gap-2">
-                        {notifications.map((n, idx) => (
+                        {notificationItems.map((n, idx) => (
                             <NotificationCard key={idx} {...n} />
                         ))}
                     </div>
@@ -121,10 +143,26 @@ export default function Home() {
             />
 
             <MainCard
-                title={"Tipos de reserva"}
+                title={"Tipos de Materiais"}
                 children={
                     <div className="w-full  h-full flex items-center justify-center">
-                        <PieChart colors={slateShades} data={sampleData} />
+                        <PieChart
+                            colors={
+                                Object.keys(itemTypes).length > 0
+                                    ? pastelColors.slice(0, Object.keys(itemTypes).length)
+                                    : ['#e0e0e0']
+                            }
+                            data={
+                                Object.keys(itemTypes).length > 0
+                                    ? Object.values(itemTypes)
+                                    : [1]
+                            }
+                            labels={
+                                Object.keys(itemTypes).length > 0
+                                    ? Object.keys(itemTypes)
+                                    : ['']
+                            }
+                        />
                     </div>
 
                 }

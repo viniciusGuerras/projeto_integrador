@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import Button from "../ui/Button";
 
 export default function MaterialOverlay({ open, tab, onClose, onSubmit }) {
-    const [userm, setUserm] = useState("");
     const [hraula, setHraula] = useState("");
     const [nmrm, setNmrm] = useState("");
     const [materials, setMaterials] = useState([]);
@@ -29,8 +28,6 @@ export default function MaterialOverlay({ open, tab, onClose, onSubmit }) {
     }, []);
 
     const handleSubmit = async () => {
-        setUserm(registration);
-
         if (!registration || !hraula || !nmrm) {
             return;
         }
@@ -65,10 +62,11 @@ export default function MaterialOverlay({ open, tab, onClose, onSubmit }) {
 
         onSubmit({ prg_aula, rsr_material });
 
-        setUserm("");
         setHraula("");
         setNmrm("");
-        setDtdevolum("");
+        setTurma("");
+        setDisciplina("");
+        setQtdaula("");
     };
 
     if (!open) return null;

@@ -7,5 +7,6 @@ router.get("/",            authenticateJWT, authorizeRoles('admin'), controller.
 router.post("/",           authenticateJWT, authorizeRoles('admin'), controller.createMaterial     );
 router.get("/:materialId", authenticateJWT, authorizeRoles('admin'), controller.getMaterialByNumber);
 router.patch("/:materialId", authenticateJWT, authorizeRoles('admin'), controller.updateMaterial);
+router.patch("/:numeracao/status", authenticateJWT, authorizeRoles('admin'), controller.changeStatus);
 
 module.exports = router;

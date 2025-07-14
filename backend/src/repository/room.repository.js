@@ -74,15 +74,10 @@ exports.removeRoom = async (numeracao) => {
 }
 
 exports.changeStatus = async (numeracao) => {
-    console.log("tentando mudar o status");
-
     const sala = await db.oneOrNone(
         `SELECT disponibilidade FROM sala WHERE numeracao = $1`,
         [numeracao]
     );
-
-    
-    console.log("status atual:", numeracao);
 
     if (!sala) {
         throw new Error("Sala não encontrada");
@@ -99,9 +94,6 @@ exports.changeStatus = async (numeracao) => {
          RETURNING *`,
         [numeracao, novaDisponibilidade]
     );
-
-
-    console.log("status final:", novaDisponibilidade);
 
     return result;
 };

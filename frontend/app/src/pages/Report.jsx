@@ -10,6 +10,7 @@ export default function Report() {
 
     const fetchData = async () => {
         let type;
+
         if (activeTab === "classrooms") {
             type = "sala";
         }
@@ -20,17 +21,14 @@ export default function Report() {
             type = "all";
         }
 
-        const token = localStorage.getItem("token");
-
         try {
             const res = await fetch(`http://localhost:3000/reservation?type=${type}&sortBy=${sortBy}&sortOrder=${sortOrder}&ativo=${ativo}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
                 });
             const json = await res.json();
-            console.log(json);
             setData(json.reservations || []);
         } catch (err) {
             console.error("Erro ao buscar dados:", err);
@@ -76,7 +74,6 @@ export default function Report() {
 
                 </ul>
 
-
                 <div className="flex flex-wrap items-center gap-4">
                     <div>
                         <label className="block text-sm font-medium text-slate-700">Ordenar por</label>
@@ -87,7 +84,7 @@ export default function Report() {
                         >
                             <option value="nome">Nome</option>
                             <option value="matricula">Matrícula</option>
-                            <option value="data">horário</option>
+                            <option value="horario">Horário</option>
                         </select>
                     </div>
 

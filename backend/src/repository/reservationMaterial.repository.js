@@ -32,7 +32,8 @@ exports.createMaterialReservation = async (reservation) => {
 
 exports.findAllMaterialsReservations = async () => {
   const result = await db.query(
-    `SELECT * FROM rsr_material`
+    `SELECT * FROM rsr_material r
+    JOIN material m ON r.nmrm = m.numeracao`
   )
   return result;
 }

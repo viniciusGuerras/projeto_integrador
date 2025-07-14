@@ -37,9 +37,9 @@ CREATE TABLE material (
 
 CREATE TABLE prg_aula (
     userm VARCHAR NOT NULL,
-    hraula DATE NOT NULL,
+    hraula TIMESTAMP NOT NULL,
     nmrsala INT NULL,
-    dthoradevolus DATE NULL,
+    dthoradevolus TIMESTAMP NULL,
     turma VARCHAR NOT NULL,
     disciplina VARCHAR NOT NULL,
     qtdaula INT NOT NULL,
@@ -49,9 +49,9 @@ CREATE TABLE prg_aula (
 
 CREATE TABLE rsr_material (
     userm VARCHAR NOT NULL,
-    hraula DATE NOT NULL,         
+    hraula TIMESTAMP NOT NULL,         
     nmrm INT NOT NULL,
-    dtdevolum DATE NOT NULL,
+    dtdevolum TIMESTAMP NOT NULL,
     ativo BOOLEAN NOT NULL DEFAULT true,
     CONSTRAINT pk_rsr_material PRIMARY KEY (userm, hraula, nmrm)
 );

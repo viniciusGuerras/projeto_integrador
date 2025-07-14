@@ -125,3 +125,17 @@ exports.removeMaterial = async (req, res) => {
         }
     })
 }
+
+exports.changeStatus = async (req, res) => {
+    const numeracao = req.params.numeracao;
+
+    repository.changeStatus(numeracao)
+    .then((status) => {
+        if(!status) {
+            res.status(404).json({ error: "Disponibilidade modificada" });
+        }
+        else {
+            res.status(200).json({ message: "Material não encontrado"});
+        }
+    })
+}
