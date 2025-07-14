@@ -6,9 +6,10 @@ exports.findMaterialByNumber = async (id) => {
 };
 
 exports.findAllMaterials = async () => {
-    const result = await db.query("SELECT * FROM material");
+    const result = await db.query("SELECT * FROM material where ativo = true");
     return result;
 }
+
 
 exports.createMaterial = async (material) => {
     const {

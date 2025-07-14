@@ -1,8 +1,14 @@
 const repository = require("../repository/reservation.repository");
 
+const parseBoolean = (value) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+};
+
 exports.getAllFiltered = async (req, res) => {
     try {
-        const { type, sortBy, sortOrder, ativo } = req.query;
+        let { type, sortBy, sortOrder, ativo } = req.query;
+        ativo = parseBoolean(ativo);
 
         const reservationList = await repository.reservationReportQuery({
             type,

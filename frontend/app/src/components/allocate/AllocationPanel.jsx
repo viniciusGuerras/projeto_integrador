@@ -25,21 +25,23 @@ export default function AllocationPanel({ title }) {
 
     const fetchData = async () => {
         try {
-            const classResponse = await fetch("http://localhost:3000/reservation/classroom", {
+            const classResponse = await fetch(`http://localhost:3000/reservation/classroom/user/${localStorage.getItem("identifier")}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             });
 
             const classData = await classResponse.json();
+            console.log(classData);
 
-            const materialResponse = await fetch("http://localhost:3000/reservation/material", {
+            const materialResponse = await fetch(`http://localhost:3000/reservation/material/user/${localStorage.getItem("identifier")}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             });
 
             const materialData = await materialResponse.json();
+            console.log(materialData);
 
             const formatAllocationClassrooms = (item) => ({
                 key: idCounter.current++,
@@ -54,8 +56,13 @@ export default function AllocationPanel({ title }) {
                 day: item.dtddevolum,
             });
 
-            const classrooms = classData.classreservations.map(formatAllocationClassrooms);
-            const materials = materialData.materialsreservations.map(formatAllocationMaterials);
+            let classrooms = []; let materials = [];
+            if (classData.classreservations.length > 0) {
+                classrooms = classData.classreservations.map(formatAllocationClassrooms);
+            }
+            if (materialData.materialsreservations.length > 0) {
+                materials = materialData.materialsreservations.map(formatAllocationMaterials);
+            }
 
             setAllocations({
                 classrooms,
@@ -161,7 +168,7 @@ export default function AllocationPanel({ title }) {
         <div className="w-4/6 h-full rounded-md p-3  flex flex-col gap-3 items-end bg-white shadow-sm">
             <h1 className="self-start text-slate-800 text-xl font-semibold px-3">{title}</h1>
             <span className="w-full border-b border-slate-300"></span>
-            <ul className="w-full h-auto gap-3 flex text-slate-800 items-center justify-start">
+            <ul className="w-full h-auto gap-3 flex flex-col sm:flex-row md:flex-row lg:flex-row text-slate-800 items-center justify-start">
                 <li
                     className={`cursor-pointer px-3 py-1 rounded ${activeTab === "classrooms" ? "outline outline-solid outline-slate-300 font-semibold" : ""
                         }`}
@@ -195,7 +202,6 @@ export default function AllocationPanel({ title }) {
                         onSubmit={handleAllocations}
                     />
                 )}
-
 
                 <AllocationEditOverlay
                     tab={activeTab === "classrooms" ? "salas" : "materiais"}

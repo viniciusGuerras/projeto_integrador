@@ -51,7 +51,7 @@ export default function Home() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const classResponse = await fetch("http://localhost:3000/reservation/classroom", {
+                const classResponse = await fetch(`http://localhost:3000/reservation/classroom/user/${localStorage.getItem("identifier")}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },
@@ -61,7 +61,7 @@ export default function Home() {
                 setClassroomCount(classData.classreservations.length);
                 const classroomNotifications = classData.classreservations.map((item) => ({ title: `Sala ${item.numeracao}`, description: new Date(item.dthoradevolus).toLocaleString(), date: new Date(item.dthoradevolus), level: 'warning' }));
 
-                const materialResponse = await fetch("http://localhost:3000/reservation/material", {
+                const materialResponse = await fetch(`http://localhost:3000/reservation/material/user/${localStorage.getItem("identifier")}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
                     },

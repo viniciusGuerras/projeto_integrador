@@ -30,6 +30,21 @@ exports.getMaterialReservations = (req, res) => {
         });
 };
 
+
+exports.getMaterialReservationsByUser = (req, res) => {
+    const registration = req.params.matricula;
+
+    repository.findAllMaterialReservationsFromUser(registration)
+        .then((reservationList) => {
+            if (reservationList && reservationList.length > 0) {
+                res.status(200).json({ message: "Reservas de materiais recuperadas com sucesso", materialsreservations: reservationList });
+            } 
+            else {
+                res.status(200).json({ message: "Nenhuma reserva encontrado", materialreservations: [] });
+            }
+        });
+};
+
 exports.createMaterialReservation = async (req, res) => {
     const { userm, hraula, nmrm, dtdevolum} = req.body;
     console.log("req.body, creating material reservation:", req.body);
@@ -98,4 +113,16 @@ const numeracao = req.params.numeracao;
 };
 
 exports.removeMaterialReservation = async (req, res) => {
-};
+    const numeracao = req.params.numeracao;
+
+    repository.removeMaterialReservation(numeracao)
+        .then((removedMaterialReservation) => {
+            if (!removedMaterialReservation) {
+                res.status(404).json({ error: "Material não encontrado" });
+            }
+            else {
+                res.status(200).json({ message: "Material desativado com sucesso", material: removedMaterialReservation });
+            }
+        })
+}
+

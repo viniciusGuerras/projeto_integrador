@@ -10,6 +10,11 @@ exports.findAllClassroomReservations = async () => {
     return result;
 };
 
+exports.findAllClassroomReservationsFromUser = async (registration) => {
+    const result = await db.query(`SELECT * FROM prg_aula p JOIN sala s ON p.nmrsala = s.numeracao WHERE p.userm = '${registration}'`);
+    return result;
+};
+
 exports.createClassroomReservation = async (reservation) => {
     const {
         userm,
@@ -80,17 +85,22 @@ exports.updateClassroomReservation = async (id, reservationData) => {
     return result;
 };
 
-exports.removeClassroomReservation = async (id) => {
+
+exports.removeClassroomReservation = async (numeracao) => {
     const result = await db.query(
         `UPDATE prg_aula
-         SET ativo = false
-         WHERE id = $1
-         RETURNING id`,
-        [id]
-    );
+        SET 
+            ativo = $2
+        WHERE numeracao = $1
+        RETURNING numeracao`,
+    [
+        numeracao,
+        false
+    ]);
 
     return result;
 };
+
 
 exports.getQtdAula = async (id, hora) => {
     const result = await db.query(

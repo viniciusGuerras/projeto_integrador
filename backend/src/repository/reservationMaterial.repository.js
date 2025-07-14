@@ -5,8 +5,14 @@ exports.findMaterialReservationById = async (id) => {
     return result;
 };
 
-exports.findAllMaterialReservations = async () => {
 
+exports.findAllMaterialReservationsFromUser = async (registration) => {
+    const result = await db.query(`
+      SELECT * FROM rsr_material r
+      JOIN material m ON r.nmrm = m.numeracao
+      WHERE r.userm = '${registration}'
+    `);
+    return result;
 };
 
 exports.createMaterialReservation = async (reservation) => {
@@ -41,5 +47,17 @@ exports.findAllMaterialsReservations = async () => {
 exports.updateMaterialReservation = async (id, reservationData) => {
 };
 
-exports.removeMaterialReservation = async (id) => {
+exports.removeMaterialReservation = async (numeracao) => {
+    const result = await db.query(
+        `UPDATE rsr_material
+        SET 
+            ativo = $2
+        WHERE numeracao = $1
+        RETURNING numeracao`,
+    [
+        numeracao,
+        false
+    ]);
+
+    return result;
 };

@@ -6,9 +6,10 @@ exports.findRoomByNumber = async (id) => {
 };
 
 exports.findAllRooms = async () => {
-    const result = await db.query("SELECT * FROM sala");
+    const result = await db.query("SELECT * FROM sala WHERE ativo = true");
     return result;
 }
+
 
 exports.createRoom = async (room) => {
     const {

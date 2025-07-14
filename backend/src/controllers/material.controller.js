@@ -113,7 +113,7 @@ exports.updateMaterial = async (req, res) => {
 
 exports.removeMaterial = async (req, res) => {
 
-    const numeracao = req.params.numeracao; 
+    const numeracao = req.params.materialId; 
 
     repository.removeMaterial(numeracao)
     .then((removedMaterial) => {
